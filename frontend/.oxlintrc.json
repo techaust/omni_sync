@@ -24,5 +24,6 @@
     "jsx-a11y/tabindex-no-positive": "error",
     "no-console": ["error", { "allow": ["warn", "error"] }]
   },
+  "overrides": [{ "files": ["scripts/**"], "rules": { "no-console": "off" } }],
   "ignorePatterns": ["dist", "src/api/schema.d.ts", "playwright-report", "test-results"]
 }

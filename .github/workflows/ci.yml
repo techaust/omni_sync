@@ -17,6 +17,7 @@ concurrency:
 env:
   UV_FROZEN: "1"
   FORCE_COLOR: "1"
+  PYTHONUTF8: "1"
 
 jobs:
   docs:

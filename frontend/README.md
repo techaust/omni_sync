@@ -4,17 +4,17 @@ React 19 + TypeScript single-page app served by the OmniSync server. Design: [08
 
 ## Commands
 
-| Command | What it does |
-|---|---|
-| `npm ci` | Install exactly the locked dependencies |
-| `npm run dev` | Vite dev server on <http://localhost:5173>, proxying `/api` to `omnisync serve` on port 8765 |
-| `npm run build` | Type-check and build to `dist/` (served by the backend) |
-| `npm run lint` / `npm run format:check` / `npm run typecheck` | oxlint, Prettier, `tsc --strict` |
-| `npm test` / `npm run test:coverage` | Vitest unit and component tests (coverage gate: 70% of lines) |
-| `npm run api:generate` | Regenerate `src/api/schema.d.ts` from the backend OpenAPI schema |
-| `npm run api:check` | Fail if the committed API types differ from the backend (used in CI) |
-| `npm run check:bundle` | Fail if initial JavaScript exceeds 300 KB gzip (NFR-PERF-02) |
-| `npm run e2e` | Playwright end-to-end tests against the real server and production build (run `npm run build` first) |
+| Command                                                       | What it does                                                                                         |
+| ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `npm ci`                                                      | Install exactly the locked dependencies                                                              |
+| `npm run dev`                                                 | Vite dev server on <http://localhost:5173>, proxying `/api` to `omnisync serve` on port 8765         |
+| `npm run build`                                               | Type-check and build to `dist/` (served by the backend)                                              |
+| `npm run lint` / `npm run format:check` / `npm run typecheck` | oxlint, Prettier, `tsc --strict`                                                                     |
+| `npm test` / `npm run test:coverage`                          | Vitest unit and component tests (coverage gate: 70% of lines)                                        |
+| `npm run api:generate`                                        | Regenerate `src/api/schema.d.ts` from the backend OpenAPI schema                                     |
+| `npm run api:check`                                           | Fail if the committed API types differ from the backend (used in CI)                                 |
+| `npm run check:bundle`                                        | Fail if initial JavaScript exceeds 300 KB gzip (NFR-PERF-02)                                         |
+| `npm run e2e`                                                 | Playwright end-to-end tests against the real server and production build (run `npm run build` first) |
 
 ## Layout
 
