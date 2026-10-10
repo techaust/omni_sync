@@ -14,7 +14,8 @@ const ADMIN = { username: 'owner', password: 'correct horse battery staple' }
 const OPERATOR = { username: 'colleague', password: 'violet-anchor-meadow-42' }
 
 function setupToken(): string {
-  const file = path.join(process.env.OMNISYNC_E2E_DATA_DIR!, 'setup-token.txt')
+  const dataDir = test.info().project.metadata.dataDir as string
+  const file = path.join(dataDir, 'setup-token.txt')
   return readFileSync(file, 'utf8').trim()
 }
 
