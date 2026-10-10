@@ -1,14 +1,15 @@
 /**
  * Milestone 3 exit criterion: setup, sign-in and user management work end to end in a real
  * browser against the real server, with zero serious/critical axe violations and zero CSP
- * violations. Tests share one server and data directory, so they run in order.
+ * violations. Tests in one browser project share a server and data directory and build on each
+ * other's state, so they run in order and are never retried individually.
  */
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import { AxeBuilder } from '@axe-core/playwright'
 import { expect, test, type Page } from '@playwright/test'
 
-test.describe.configure({ mode: 'serial' })
+test.describe.configure({ mode: 'serial', retries: 0 })
 
 const ADMIN = { username: 'owner', password: 'correct horse battery staple' }
 const OPERATOR = { username: 'colleague', password: 'violet-anchor-meadow-42' }
@@ -19,11 +20,22 @@ function setupToken(): string {
   return readFileSync(file, 'utf8').trim()
 }
 
-/** Fails the test on any Content-Security-Policy violation or uncaught page error. */
+/**
+ * Collects every Content-Security-Policy violation (with the offending element, so failures are
+ * diagnosable in any browser) and every uncaught page error. Tests assert the list stays empty.
+ */
 function watchForViolations(page: Page): string[] {
   const problems: string[] = []
+  void page.addInitScript(() => {
+    document.addEventListener('securitypolicyviolation', (event) => {
+      const target = event.target as Element | Document | null
+      const element = target && 'outerHTML' in target ? target.outerHTML.slice(0, 200) : String(target)
+      console.error(`CSP-VIOLATION ${event.effectiveDirective} | ${event.blockedURI} | ${element}`)
+    })
+  })
   page.on('console', (msg) => {
-    if (msg.type() === 'error' && /Content[- ]Security[- ]Policy|CSP/i.test(msg.text())) problems.push(msg.text())
+    if (msg.type() === 'error' && /CSP-VIOLATION|Content[- ]Security[- ]Policy/i.test(msg.text()))
+      problems.push(msg.text())
   })
   page.on('pageerror', (err) => problems.push(`pageerror: ${err.message}`))
   return problems
