@@ -21,7 +21,7 @@ env:
 jobs:
   docs:
     name: Documentation
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
@@ -41,13 +41,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-24.04, windows-latest]
     defaults:
       run:
         working-directory: backend
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10
+      - uses: astral-sh/setup-uv@v10.3.0
         with:
           python-version: "3.12"
           enable-cache: true
@@ -63,12 +63,12 @@ jobs:
       - name: Tests with coverage gate
         run: uv run python -m pytest
       - name: Dependency audit
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.os == 'ubuntu-24.04'
         run: uv run pip-audit --skip-editable
 
   frontend:
     name: Front end
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: frontend
@@ -79,7 +79,7 @@ jobs:
           node-version: "24"
           cache: npm
           cache-dependency-path: frontend/package-lock.json
-      - uses: astral-sh/setup-uv@v10
+      - uses: astral-sh/setup-uv@v10.3.0
         with:
           python-version: "3.12"
           enable-cache: true
@@ -99,7 +99,7 @@ jobs:
 
   e2e:
     name: End-to-end (Chromium, Firefox, WebKit)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [backend, frontend]
     defaults:
       run:
@@ -111,7 +111,7 @@ jobs:
           node-version: "24"
           cache: npm
           cache-dependency-path: frontend/package-lock.json
-      - uses: astral-sh/setup-uv@v10
+      - uses: astral-sh/setup-uv@v10.3.0
         with:
           python-version: "3.12"
           enable-cache: true
@@ -131,7 +131,7 @@ jobs:
 
   secrets:
     name: Secret scan (gitleaks)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
         with:
@@ -139,4 +139,4 @@ jobs:
       - name: gitleaks
         run: >
           docker run --rm -v "${{ github.workspace }}:/repo" ghcr.io/gitleaks/gitleaks:v8.30.1
-          git /repo --redact --verbose --exit-code 1
+          git /repo --config /repo/.gitleaks.toml --redact --verbose --exit-code 1

@@ -1,0 +1,18 @@
+# gitleaks configuration: all default rules, plus one narrowly scoped allowlist.
+title = "OmniSync gitleaks configuration"
+
+[extend]
+useDefault = true
+
+# Tests create throw-away accounts with fixed passwords (for example "violet-anchor-meadow-42")
+# against temporary databases. Only the generic high-entropy rule is relaxed, and only in test
+# files; every specific rule (AWS keys, private keys, tokens, ...) still applies everywhere.
+[[allowlists]]
+description = "Throw-away credentials used only by automated tests"
+targetRules = ["generic-api-key"]
+paths = [
+  '''^backend/tests/''',
+  '''^frontend/e2e/''',
+  '''^frontend/src/test/''',
+  '''^frontend/src/.+\.test\.tsx?$''',
+]
