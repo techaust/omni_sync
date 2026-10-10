@@ -1,5 +1,6 @@
-# Runtime data and secrets (never commit)
-data/
+# Runtime data and secrets (never commit). Anchored, so source folders named data/ are kept.
+/data/
+/backend/data/
 *.db
 *.db-wal
 *.db-shm

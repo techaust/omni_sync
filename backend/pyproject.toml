@@ -1,0 +1,91 @@
+[project]
+name = "omnisync"
+version = "2.0.0.dev0"
+description = "Publish WordPress plugin and theme updates to every WooCommerce store from one browser upload."
+readme = "README.md"
+license = "GPL-3.0-only"
+license-files = ["LICENSE"]
+authors = [{ name = "TecHaust Technologies" }]
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "alembic>=1.20.0",
+    "argon2-cffi>=25.1.0",
+    "fastapi>=0.143.0",
+    "pydantic-settings>=2.15.0",
+    "sqlalchemy>=2.1.4",
+    "uvicorn>=0.54.0",
+]
+
+[project.scripts]
+omnisync = "omnisync.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.12,<0.13"]
+build-backend = "uv_build"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "UP", "B", "BLE", "S", "SIM", "PERF", "C4", "PIE", "RUF", "ASYNC", "PT", "RET", "TRY", "DTZ"]
+ignore = ["E501", "TRY003"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S105", "S106", "S108", "PT011"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unreachable = true
+plugins = ["pydantic.mypy"]
+mypy_path = "src"
+packages = ["omnisync"]
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers --cov=omnisync --cov-branch --cov-report=term-missing:skip-covered"
+markers = ["live: requires live external services (never run in CI)"]
+filterwarnings = ["error"]
+
+[tool.coverage.report]
+fail_under = 80
+exclude_also = ["if TYPE_CHECKING:", "raise NotImplementedError", "@overload"]
+
+[tool.importlinter]
+root_package = "omnisync"
+
+[[tool.importlinter.contracts]]
+name = "Architecture layers (03-ARCHITECTURE section 4)"
+type = "layers"
+# Parenthesised layers are optional until they exist (jobs: Milestone 4b, core: Milestone 4a).
+layers = ["omnisync.cli", "omnisync.api", "(omnisync.jobs)", "omnisync.services", "(omnisync.core)"]
+containers = []
+exhaustive = false
+
+[dependency-groups]
+dev = [
+    "httpx2>=2.13.1",
+    "import-linter>=2.15",
+    "mypy>=2.4.0",
+    "pip-audit>=2.10.1",
+    "pytest>=9.1.1",
+    "pytest-cov>=7.1.0",
+    "ruff>=0.17.0",
+]
+
+[tool.uv]
+# SQLAlchemy is built from source without its optional Cython speed-ups: Windows Smart App
+# Control blocks the unsigned compiled modules on the owner's PC, and the pure-Python modules
+# are functionally identical (docs/11-ROADMAP.md risk R9).
+no-binary-package = ["sqlalchemy"]
+
+[tool.uv.extra-build-variables]
+sqlalchemy = { DISABLE_SQLALCHEMY_CEXT = "1" }
+
