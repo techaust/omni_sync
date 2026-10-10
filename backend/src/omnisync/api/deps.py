@@ -42,7 +42,11 @@ def get_db(state: StateDep) -> Iterator[DbSession]:
         db.close()
 
 
-DbDep = Annotated[DbSession, Depends(get_db)]
+# scope="function": commit (or roll back) BEFORE the response is sent. FastAPI's default for
+# yield dependencies is "request", which commits after the client already has its response, so a
+# fast follow-up read could miss the write and a failed commit would look like success
+# (tests/test_transactions.py).
+DbDep = Annotated[DbSession, Depends(get_db, scope="function")]
 
 
 def check_origin(request: Request, state: StateDep) -> None:
