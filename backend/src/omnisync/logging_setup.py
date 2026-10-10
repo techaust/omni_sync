@@ -82,5 +82,5 @@ def configure_logging(level: str, logs_dir: Path | None) -> None:
         )
         file_handler.setFormatter(formatter)
         root.addHandler(file_handler)
-    for noisy in ("uvicorn.access",):
+    for noisy in ("uvicorn.access", "alembic.runtime.migration"):
         logging.getLogger(noisy).setLevel(logging.WARNING)

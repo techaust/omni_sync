@@ -9,7 +9,7 @@ An ADR records one significant decision: its context, the options considered and
 | ADR | Title | Status |
 |---|---|---|
 | [ADR-0001](0001-local-web-application.md) | Rebuild as a local web application; retire the OpenCode front end | Accepted |
-| [ADR-0002](0002-python-fastapi-backend.md) | Python and FastAPI backend reusing the legacy domain logic | Accepted |
+| [ADR-0002](0002-python-fastapi-backend.md) | Python and FastAPI backend reusing the legacy domain logic | Accepted (amended by ADR-0014) |
 | [ADR-0003](0003-sqlite-database.md) | SQLite (WAL) with SQLAlchemy and Alembic | Accepted |
 | [ADR-0004](0004-in-process-job-runner.md) | In-process job runner without a message broker | Accepted |
 | [ADR-0005](0005-react-typescript-spa.md) | React and TypeScript single-page application | Accepted |
@@ -20,4 +20,5 @@ An ADR records one significant decision: its context, the options considered and
 | [ADR-0010](0010-n-store-model.md) | Configurable N-store model | Accepted |
 | [ADR-0011](0011-license-gpl-3.md) | Licence remains GPL-3.0 | Accepted |
 | [ADR-0012](0012-session-auth-for-localhost.md) | Session-cookie authentication hardened for localhost | Accepted |
-| [ADR-0013](0013-design-system-shadcn-indigo.md) | Design system based on shadcn/ui with an indigo accent | Accepted |
+| [ADR-0013](0013-design-system-shadcn-indigo.md) | Design system based on shadcn/ui with an indigo accent | Accepted (amended by ADR-0014) |
+| [ADR-0014](0014-milestone-3-implementation-adjustments.md) | Implementation adjustments from Milestone 3 | Accepted |

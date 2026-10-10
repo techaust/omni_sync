@@ -1,6 +1,6 @@
 # Contributing to OmniSync
 
-Thank you for contributing. This guide covers the workflow, the quality gates and the Definition of Done. The project is in the design phase, so the code-related gates apply from Milestone 3 ([roadmap](docs/11-ROADMAP.md)). The documentation gates apply now.
+Thank you for contributing. This guide covers the workflow, the quality gates and the Definition of Done. Every gate below runs in CI ([.github/workflows/ci.yml](.github/workflows/ci.yml)) on every push and pull request.
 
 ## Workflow
 
@@ -13,14 +13,16 @@ Thank you for contributing. This guide covers the workflow, the quality gates an
 
 ## Quality gates
 
-| Gate | Command | From |
-|---|---|---|
-| Documentation | `python scripts/check_docs.py` and `npx --yes markdownlint-cli2 "**/*.md"` | now |
-| Backend lint, format, types | `uv run ruff check`, `uv run ruff format --check`, `uv run mypy` | Milestone 3 |
-| Backend tests and coverage | `uv run pytest` | Milestone 3 |
-| Front-end lint, types, tests | `npm run lint`, `npm run typecheck`, `npm test` | Milestone 3 |
-| End-to-end and accessibility | `npm run e2e` | Milestone 4c |
-| Dependencies and secrets | `uv run pip-audit`, `npm audit --audit-level=high`, `gitleaks detect` | Milestone 3 |
+| Gate | Command (run in the folder shown) |
+|---|---|
+| Documentation (root) | `python scripts/check_docs.py`, `python -m unittest scripts/test_check_docs.py`, `npx --yes markdownlint-cli2 "**/*.md"` |
+| Backend lint and format (`backend/`) | `uv run ruff check src tests scripts`, `uv run ruff format --check src tests scripts` |
+| Backend types and architecture (`backend/`) | `uv run python -m mypy`; the import-linter command in [backend/README.md](backend/README.md) |
+| Backend tests and coverage (`backend/`) | `uv run python -m pytest` |
+| Front-end lint, format, types (`frontend/`) | `npm run lint`, `npm run format:check`, `npm run typecheck` |
+| Front-end tests, API contract, bundle (`frontend/`) | `npm run test:coverage`, `npm run api:check`, `npm run build` then `npm run check:bundle` |
+| End-to-end and accessibility (`frontend/`) | `npm run build` then `npm run e2e` (Chromium locally; Chromium, Firefox and WebKit in CI) |
+| Dependencies and secrets | `uv run pip-audit --skip-editable` (backend), `npm audit --audit-level=high` (frontend), gitleaks (CI) |
 
 Thresholds are defined in [09-TESTING-STRATEGY §10](docs/09-TESTING-STRATEGY.md#10-coverage-and-quality-gates-ci).
 
@@ -49,10 +51,10 @@ Before adding a dependency, record in the PR:
 
 All dependencies are pinned through `uv.lock` and `package-lock.json`.
 
-## Coding standards (from Milestone 3)
+## Coding standards
 
-- Python: ruff (line length 100), mypy `--strict`, no bare `except`, typed domain errors with stable codes, and no I/O in `core/`.
-- TypeScript: `strict`, no `any` without a justifying comment, no `dangerouslySetInnerHTML`, and accessible components only (Radix-based).
+- Python: ruff (line length 100), mypy `--strict`, no bare `except`, typed domain errors with stable codes registered in `omnisync/errors.py`, and no I/O in `core/`. Every new API route declares exactly one permission and is added to `API_ROUTERS` (the permission-matrix test enforces this).
+- TypeScript: `strict`, no `any` (oxlint), no `dangerouslySetInnerHTML` (oxlint), accessible components only (Radix-based), colours only from `src/styles/tokens.css`, and no inline scripts or styles (the end-to-end tests fail on CSP violations).
 - Names describe intent; no abbreviations beyond the [glossary](docs/GLOSSARY.md).
 
 ## Safety rules for contributors

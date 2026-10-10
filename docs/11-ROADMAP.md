@@ -7,7 +7,7 @@
 | M | Name | Deliverables | Exit criteria | Status |
 |---|---|---|---|---|
 | 1 | Discovery | [01-DISCOVERY-REPORT](01-DISCOVERY-REPORT.md) | Report reviewed; decisions recorded | **Done** (2026-10-11) |
-| 2 | Product and architecture design | Documents 02–10, ADRs 0001–0013, glossary, documentation standard and checker | `scripts/check_docs.py` and markdownlint clean; owner approval | **Done** (approved by the owner 2026-10-11) |
+| 2 | Product and architecture design | Documents 02–10, ADRs 0001–0013 (0014 added in M3), glossary, documentation standard and checker | `scripts/check_docs.py` and markdownlint clean; owner approval | **Done** (approved by the owner 2026-10-11) |
 | 3 | Foundation | Repo layout (`backend/`, `frontend/`), uv and npm lockfiles, lint/type/test tooling, CI workflow, SQLite + Alembic baseline, settings, auth (setup, login, sessions, CSRF, Host check), SPA shell with navigation and design tokens, docs check in CI | CI green; login E2E passes; permission-matrix test skeleton runs | **In progress** |
 | 4a | Domain port | `core/` archive, versions, slugs, matching, catalog, shortcodes; legacy tests ported; parity harness | Ported tests pass; differential inspection matches on the corpus | Not started |
 | 4b | Services and runner | S3, WooCommerce, secrets, lease, shared config, job runner, pipeline, catalog refresh, cleanup, legacy import; D-01…D-05 fixed | Integration suite green; differential planning matches; chaos tests pass | Not started |
@@ -31,6 +31,7 @@
 | 2026-10-11 | Import legacy data; retire legacy CLI after cutover | [10-OPERATIONS §9](10-OPERATIONS.md#9-cutover-from-legacy) |
 | 2026-10-11 | Port from the legacy working tree as found, including the uncommitted mapping-healing change (`legacy:omnisync/mappings.py:53-116`). The legacy repository will be deleted after the project is complete. (Owner confirmation; resolves Q5.) | [01-DISCOVERY-REPORT §12](01-DISCOVERY-REPORT.md#12-constraints-and-risks) |
 | 2026-10-11 | Design (Milestone 2) approved by the owner | This roadmap, section 1 |
+| 2026-10-11 | Milestone 3 implementation adjustments: SQLAlchemy without compiled extensions, `python -m` invocation, httpx2, oxlint, shadcn Nova preset, CSP and focus-ring fixes to generated components | [ADR-0014](adr/0014-milestone-3-implementation-adjustments.md) |
 | 2026-10-11 | Source repository `https://github.com/techaust/omni_sync` (public, default branch `main`); a new repository built up from an empty tree; the domain core and its tests are ported from legacy ([ADR-0002](adr/0002-python-fastapi-backend.md)) | [README](../README.md) |
 
 ### 2.2 Open questions
@@ -55,10 +56,19 @@
 | R6 | WooCommerce or S3 extension behaviour differs from legacy assumptions on a new store | L | M | Store connection test; contract tests with recorded responses | Engineering |
 | R7 | The legacy repository is deleted before its data is imported or before the parity tests have run | L | H | Delete legacy only after cutover (`10-OPERATIONS` §9) and after Milestone 4a parity tests pass; once deleted, `check_docs.py` reports legacy citations as unverified warnings instead of failing | Owner |
 | R8 | The repository is public: operational details (bucket name, store URLs, workflow) are visible | M | L | No secrets in the repository (gitleaks in CI); the bucket is private and needs credentials; owner accepted public visibility on 2026-10-11 | Owner |
+| R9 | Windows Smart App Control on the owner's (and possibly the colleague's) PC blocks unsigned native binaries of future dependencies | M | M | Prefer pure-Python packages or builds; run tools via `python -m`; every new dependency is smoke-tested on the owner's PC before adoption (ADR-0014); CI also runs on Windows | Engineering |
 
 ### 2.4 Known defects
 
-None in 2.0 yet (no code). Legacy defects D-01…D-10 are tracked in [01-DISCOVERY-REPORT §5](01-DISCOVERY-REPORT.md#5-weaknesses-defects-and-risks) and addressed by FR-CLN-02, FR-PIPE-05, FR-MATCH-05, FR-PIPE-03, FR-PIPE-06, FR-RUN-02, FR-SET-01, FR-RULE-01 and FR-CAT-03.
+Open limitations in the 2.0 code (Milestone 3):
+
+| # | Limitation | Plan |
+|---|---|---|
+| L1 | The bundled common-password list (SecLists top 10,000) contains only 10 entries with 12 or more characters, so with the 12-character minimum it adds little protection beyond the length rule. | Evaluate a larger breached-password list (offline, licence-compatible) in Milestone 6. |
+| L2 | Firefox and WebKit end-to-end runs happen only in CI (Linux). On the owner's PC the Playwright Firefox build is blocked and WebKit lacks Windows dependencies. | Accepted; CI is authoritative for cross-browser results. |
+| L3 | `/health/details` reports database, schema and data-folder checks only. Full legacy `check` parity (credentials, stores, S3, catalog) arrives with those services. | Milestone 4b (FR-OBS-01). |
+
+Legacy defects D-01…D-10 are tracked in [01-DISCOVERY-REPORT §5](01-DISCOVERY-REPORT.md#5-weaknesses-defects-and-risks) and addressed by FR-CLN-02, FR-PIPE-05, FR-MATCH-05, FR-PIPE-03, FR-PIPE-06, FR-RUN-02, FR-SET-01, FR-RULE-01 and FR-CAT-03.
 
 ## 3. Traceability matrix
 

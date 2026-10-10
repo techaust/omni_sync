@@ -145,7 +145,7 @@ Requirements: FR-AI-05 to FR-AI-08.
 
 ## 5. Visual design system
 
-**Theme:** shadcn/ui ("new-york" style) on Radix UI primitives and Tailwind CSS, with zinc neutrals and an indigo accent; follows the OS light/dark setting by default ([ADR-0013](adr/0013-design-system-shadcn-indigo.md)).
+**Theme:** shadcn/ui (Nova preset, [ADR-0014](adr/0014-milestone-3-implementation-adjustments.md)) on Radix UI primitives and Tailwind CSS, with zinc neutrals and an indigo accent; follows the OS light/dark setting by default ([ADR-0013](adr/0013-design-system-shadcn-indigo.md)).
 
 ### 5.1 Colour tokens
 

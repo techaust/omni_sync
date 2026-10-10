@@ -8,5 +8,5 @@
     "MD041": true,           // first line must be a top-level heading
     "MD060": false           // table column alignment: compact tables are intentional
   },
-  "ignores": ["node_modules/**", ".venv/**", "frontend/dist/**", "LICENSE"]
+  "ignores": ["**/node_modules/**", "**/.venv/**", "frontend/dist/**", "frontend/playwright-report/**", "frontend/test-results/**", "**/.pytest_cache/**", "LICENSE"]
 }

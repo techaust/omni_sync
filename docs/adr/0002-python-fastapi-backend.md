@@ -1,6 +1,6 @@
 # ADR-0002: Python and FastAPI backend reusing the legacy domain logic
 
-> **Status:** Accepted · **Owner:** TecHaust Technologies (@techaust) · **Last reviewed:** 2026-10-11 · **Audience:** engineers
+> **Status:** Accepted (amended by [ADR-0014](0014-milestone-3-implementation-adjustments.md): httpx2 replaces httpx) · **Owner:** TecHaust Technologies (@techaust) · **Last reviewed:** 2026-10-11 · **Audience:** engineers
 
 **Date:** 2026-10-11 · **Deciders:** Engineering
 

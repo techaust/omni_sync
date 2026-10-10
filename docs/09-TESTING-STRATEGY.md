@@ -17,7 +17,7 @@ This document defines how every requirement is verified. Which test covers which
 |---|---|---|---|
 | Unit | `core/` pure functions, services with fakes | pytest, Hypothesis | every commit |
 | Property | Extractor, slugify, version comparison, lease protocol | Hypothesis | every commit (CI profile: 200 examples) |
-| Integration | API + DB + job runner + fake S3/WC/AI | pytest, FastAPI TestClient, httpx, respx, moto | every commit |
+| Integration | API + DB + job runner + fake S3/WC/AI | pytest, FastAPI TestClient (httpx2), mock transports, moto | every commit |
 | Contract | AI provider adapters vs recorded fixtures; OpenAPI ↔ generated TS client | pytest, openapi-typescript diff | every commit |
 | Front-end unit/component | Components, hooks, forms | Vitest, Testing Library | every commit |
 | End-to-end | Real server (fake externals) + built SPA in Chromium, Firefox, WebKit | Playwright | every PR |
@@ -33,7 +33,7 @@ This document defines how every requirement is verified. Which test covers which
 | External | Strategy |
 |---|---|
 | S3 | **moto** for standard operations. A purpose-built `FakeConditionalS3` implements `If-None-Match`/`If-Match` semantics, 412/409 responses and `Date` headers for lease and shared-config tests, because emulator support for conditional writes cannot be assumed. The same lease tests also run against real S3 in the live smoke suite under a test prefix. |
-| WooCommerce | `respx`-mocked httpx transport backed by an in-memory product store that implements GET/PUT `products/{id}`, paginated listing with `X-WP-TotalPages`, configurable faults (status codes, latency, ignored writes, `date_modified` rejection). |
+| WooCommerce | A mocked httpx2 transport (`respx` if compatible with httpx2, otherwise `httpx2.MockTransport`; ADR-0014) backed by an in-memory product store that implements GET/PUT `products/{id}`, paginated listing with `X-WP-TotalPages`, configurable faults (status codes, latency, ignored writes, `date_modified` rejection). |
 | AI providers | Recorded response fixtures per provider; a scripted fake provider for tool-loop tests. |
 | Archives | Generated at test time by builders (`make_plugin_zip(slug, version, header=…)`, nested bundles, Envato wrappers), plus a small committed corpus of anonymised real structures. Zip bombs are generated, never committed. |
 | Time | Injected clock for lease, session and plan-expiry tests. |
@@ -106,7 +106,8 @@ Network faults (timeouts, connection resets, 5xx bursts) are injected through th
 | Gate | Threshold |
 |---|---|
 | ruff (lint + format), mypy `--strict`, import-linter | clean |
-| eslint, `tsc --strict`, prettier check | clean |
+| oxlint, `tsc --strict`, Prettier check | clean |
+| OpenAPI types up to date (`npm run api:check`); initial JS ≤ 300 KB gzip (`npm run check:bundle`) | clean |
 | Backend coverage | `core/` ≥ 90% branch; overall ≥ 80% |
 | Front-end coverage | ≥ 70% lines |
 | pip-audit, `npm audit --audit-level=high`, gitleaks | no findings |

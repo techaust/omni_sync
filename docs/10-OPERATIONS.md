@@ -2,14 +2,16 @@
 
 > **Status:** Accepted (approved design) – procedures describe the designed system and will be validated on a clean Windows 11 machine in Milestone 7 · **Owner:** TecHaust Technologies (@techaust) · **Last reviewed:** 2026-10-11 · **Audience:** the owner, the colleague, whoever maintains an installation
 
-**Important:** OmniSync 2.0 is not implemented yet. Commands in this guide do not work until the matching milestone in [11-ROADMAP](11-ROADMAP.md) is complete. Until cutover, keep using the legacy tool.
+**Important:** OmniSync 2.0 is under construction. **Available since Milestone 3:** installation from source (section 2), `serve`, `create-admin`, `reset-password`, first-run setup of the admin account (section 4, step 1), users and roles. Everything else in this guide (S3, stores, AI, runs, backups, import, cutover, `install-task`) arrives with the milestone named in [11-ROADMAP](11-ROADMAP.md). Until cutover, keep using the legacy tool.
+
+Commands use `uv run python -m omnisync …` rather than `uv run omnisync …`. Both work, but on PCs where Windows Smart App Control blocks generated `.exe` launchers, only the `python -m` form works ([ADR-0014](adr/0014-milestone-3-implementation-adjustments.md)).
 
 ## 1. Requirements
 
 | Item | Requirement |
 |---|---|
 | OS | Windows 11 (primary). Linux and macOS work for development. |
-| Runtime | Python 3.12 and `uv`; Node.js 20 or newer only to build the front end from source (release builds ship the compiled front end) |
+| Runtime | Python 3.12 and `uv`; Node.js 24 or newer only to build the front end from source (release builds ship the compiled front end) |
 | Disk | ≥ 10 GB free in the data directory (archives plus processed copies plus backups) |
 | Network | HTTPS to `s3.<region>.amazonaws.com`, every store URL, and the AI provider (optional). Upload bandwidth of at least 2 Mbit/s (each upload call must finish within 60 s, [03-ARCHITECTURE §5.2](03-ARCHITECTURE.md#52-item-stages-live-pipeline)). |
 | Clock | Windows time sync enabled (accurate timestamps). Lease safety uses S3 time, not the PC clock ([03-ARCHITECTURE §6.4](03-ARCHITECTURE.md#64-clock-skew)). |
@@ -17,14 +19,15 @@
 
 ## 2. Installation
 
-1. Install Python 3.12 and uv: `winget install Python.Python.3.12` and `winget install astral-sh.uv`.
-2. Get the release: clone the repository or unzip a release archive into, for example, `D:\Apps\OmniSync`.
-3. Install the dependencies exactly as locked: `uv sync --frozen`.
-4. Verify the installation: `uv run omnisync --version` prints the version.
-5. Start the server: `uv run omnisync serve`. Expected console output includes `Listening on http://127.0.0.1:8765`. Until setup is complete it also prints `Setup token: XXXXX-XXXXX-XXXXX-XXXXX-XXXXX-X` (a new token at every start) and writes the same token to `<data dir>\setup-token.txt`.
-6. Open `http://127.0.0.1:8765` and complete the setup wizard (section 4).
+1. Install Python 3.12, uv and (until release archives exist, Milestone 7) Node.js 24: `winget install Python.Python.3.12`, `winget install astral-sh.uv`, `winget install OpenJS.NodeJS`.
+2. Get the code: `git clone https://github.com/techaust/omni_sync.git D:\Apps\OmniSync`.
+3. Install the back end exactly as locked: in `backend\`, run `uv sync --frozen`.
+4. Build the front end: in `frontend\`, run `npm ci` then `npm run build`. This creates `frontend\dist`, which the server serves.
+5. Verify: in `backend\`, `uv run python -m omnisync --version` prints the version.
+6. Start the server: `uv run python -m omnisync serve`. Expected console output includes `Listening on http://127.0.0.1:8765`. Until setup is complete it also prints `Setup token: XXXXX-XXXXX-XXXXX-XXXXX-XXXXX-X` (a new token at every start) and writes the same token to `<data dir>\setup-token.txt`.
+7. Open `http://127.0.0.1:8765` and complete the setup wizard (section 4).
 
-**Start automatically at log-on (optional).** Run `uv run omnisync install-task` once to create a Windows Task Scheduler entry that runs `omnisync serve` at log-on for the current user. The task sets its working directory to the program folder and passes the current `OMNISYNC_DATA_DIR`, so it uses the same data as a manual start. Because no console is visible for the task, read the setup token from `setup-token.txt` if setup is still pending. Remove it with `uv run omnisync uninstall-task`.
+**Start automatically at log-on (optional, Milestone 7).** Run `uv run python -m omnisync install-task` once to create a Windows Task Scheduler entry that runs `omnisync serve` at log-on for the current user. The task sets its working directory to the program folder and passes the current `OMNISYNC_DATA_DIR`, so it uses the same data as a manual start. Because no console is visible for the task, read the setup token from `setup-token.txt` if setup is still pending. Remove it with `uv run python -m omnisync uninstall-task`.
 
 ## 3. Configuration reference
 
@@ -90,12 +93,12 @@ The operator role limits what the UI offers. The enforceable limit is the collea
 **What is backed up:** the SQLite database (online backup API, consistent while running) and `omnisync.toml`. Secrets are *not* included; record them in your password manager. Archives in `processed/` are not included; their published copies are in S3.
 
 - **Automatic:** at 03:00 local time while the server is running, and at start-up if the newest backup is older than 24 h; keeps the 14 newest (FR-OPS-02).
-- **On demand:** **Settings → Backups → Create backup**, or `uv run omnisync backup`.
+- **On demand:** **Settings → Backups → Create backup**, or `uv run python -m omnisync backup`.
 
 **Restore** (target RTO ≤ 15 min, NFR-DR-01):
 
 1. Stop the server (`Ctrl+C`, or end the scheduled task).
-2. Run `uv run omnisync restore <path-to-backup.zip>`. It verifies the archive, moves the current database to `omnisync.db.pre-restore-<UTC>`, restores the database, and runs migrations if the backup is older than the installed version.
+2. Run `uv run python -m omnisync restore <path-to-backup.zip>`. It verifies the archive, moves the current database to `omnisync.db.pre-restore-<UTC>`, restores the database, and runs migrations if the backup is older than the installed version.
 3. Start the server and open **Health**. Expect green checks and the run history up to the backup time.
 4. The shared config is pulled from S3 automatically, so rules made after the backup are not lost.
 
@@ -105,7 +108,7 @@ The operator role limits what the UI offers. The enforceable limit is the collea
 
 1. Read the release notes in [CHANGELOG](../CHANGELOG.md), especially *Breaking* and *Migration* sections.
 2. Create a backup (section 7).
-3. Stop the server, replace the program files (`git pull`, or unzip the release), and run `uv sync --frozen`.
+3. Stop the server, replace the program files (`git pull`, or unzip the release), run `uv sync --frozen` in `backend\` and `npm ci` plus `npm run build` in `frontend\`.
 4. Start the server. Database migrations run automatically. If they fail, the server refuses to start and logs `db.migration_failed`; restore the backup and report the issue.
 5. Upgrade the other instance promptly. The shared config carries a `schema` number, and an instance whose schema is older than the document refuses to push changes until it is upgraded.
 
@@ -138,13 +141,14 @@ The operator role limits what the UI offers. The enforceable limit is the collea
 | Item `failed: wc.auth_failed` | Wrong or revoked WooCommerce key | Replace the secret; **Test** the store |
 | Store shows "breaker open" | 5 consecutive failures | Wait 60 s; check the store site is up |
 | Many `unmapped` items after adding products | Catalog out of date | **Catalog → Refresh** |
+| `Failed to spawn` or `An Application Control policy has blocked this file` when running a command | Windows Smart App Control blocks an unsigned launcher or native module | Use the `uv run python -m …` form of the command. If a Python package's native module is blocked, report it: the fix is a pure-Python build, as for SQLAlchemy (ADR-0014). |
 | `config.conflict` when saving a rule | The other instance changed the same rule | Choose "Keep theirs" or "Apply mine" |
 | AI unavailable | Provider down, key invalid, or budget exceeded | Check **AI status**. Work continues with deterministic candidates. |
 
 ## 12. Uninstall
 
 1. Optionally create a final backup.
-2. Run `uv run omnisync uninstall-task` if auto-start was installed.
+2. Run `uv run python -m omnisync uninstall-task` if auto-start was installed.
 3. Delete the program folder and, if no longer needed, the data directory.
 4. Remove the secrets: Windows **Credential Manager → Generic credentials**, entries starting with `omnisync`.
 5. Revoke this instance's IAM access keys and WooCommerce API keys.

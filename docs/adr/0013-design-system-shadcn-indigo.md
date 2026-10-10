@@ -1,6 +1,6 @@
 # ADR-0013: Design system based on shadcn/ui with an indigo accent
 
-> **Status:** Accepted · **Owner:** TecHaust Technologies (@techaust) · **Last reviewed:** 2026-10-11 · **Audience:** front-end engineers, the owner
+> **Status:** Accepted (amended by [ADR-0014](0014-milestone-3-implementation-adjustments.md): Nova preset, CSP and focus-ring fixes) · **Owner:** TecHaust Technologies (@techaust) · **Last reviewed:** 2026-10-11 · **Audience:** front-end engineers, the owner
 
 **Date:** 2026-10-11 · **Deciders:** Owner
 

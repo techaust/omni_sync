@@ -304,11 +304,11 @@ sequenceDiagram
 |---|---|---|---|
 | Language (backend) | Python 3.12 | Reuse tested domain code | Node/TypeScript backend (rewrite risk) |
 | Web framework | FastAPI | Typed, Pydantic, OpenAPI generation | Django (heavier), Flask (less typing) |
-| HTTP client | httpx | Sync and async, timeouts, `respx` mocking | requests (legacy; sync only) |
+| HTTP client | httpx2 (Pydantic-maintained continuation of httpx; [ADR-0014](adr/0014-milestone-3-implementation-adjustments.md)) | Sync and async, timeouts, mock transports | requests (legacy; sync only) |
 | DB | SQLite + SQLAlchemy 2 + Alembic | Zero-ops, transactional, migratable | PostgreSQL (operational overhead for 1 user) |
 | Jobs | In-process runner | No broker for ≤ 100 items/day | Celery/RQ + Redis |
 | Real-time | SSE | One-way, auto-reconnect, simple | WebSockets |
-| Front end | React + TS + Vite | Ecosystem, accessible primitives (Radix) | Svelte, Vue (both viable; smaller component ecosystems for accessible primitives) |
+| Front end | React 19 + TypeScript 6 + Vite 8; oxlint, Prettier, Vitest, Playwright | Ecosystem, accessible primitives (Radix) | Svelte, Vue (both viable; smaller component ecosystems for accessible primitives) |
 | Styling | Tailwind CSS + shadcn/ui (copied components), zinc + indigo tokens ([ADR-0013](adr/0013-design-system-shadcn-indigo.md)) | Consistency, accessible primitives, owned code, small CSS output | CSS-in-JS, Material UI, Radix Themes |
 | Fuzzy matching | `rapidfuzz` (MIT) | Fast string similarity for candidate ranking | difflib (≈ 10–100× slower over 2,400 keys × N) |
 | Passwords | `argon2-cffi` (argon2id) | Current OWASP recommendation | bcrypt |

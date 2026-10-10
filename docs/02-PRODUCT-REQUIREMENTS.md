@@ -208,11 +208,11 @@ Reference machine for performance targets: 4-core x86-64, 16 GB RAM, SSD, Window
 | NFR-REL-03 | Mutual exclusion across instances | (a) No instance starts a mutating external call after its lease deadline. (b) In schedules without process freezes, at most one instance holds the lease at any S3-time instant. (c) In freeze schedules, at most one stale in-flight call completes after a takeover (residual risk T-11). Verified over 1,000 randomised trials. | Lease property test |
 | NFR-REL-04 | Graceful degradation | A store outage affects only that store's items (circuit breaker); AI outage affects only AI features | Fault-injection tests |
 | NFR-SEC-01 | Dependency hygiene | Zero known high or critical vulnerabilities (pip-audit, npm audit) at release | CI gate |
-| NFR-SEC-02 | Static analysis | ruff (including bandit rules) and eslint security rules clean; no secrets in the repository (gitleaks) | CI gate |
+| NFR-SEC-02 | Static analysis | ruff (including bandit rules) and oxlint (including `react/no-danger`) clean; no secrets in the repository (gitleaks) | CI gate |
 | NFR-SEC-03 | Secret confidentiality | No secret value in any API response, log line, audit record or AI prompt | Automated canary-secret scan test |
 | NFR-SEC-04 | Web security | Host-header allow-list, CSRF protection, strict CSP, SameSite=Strict cookies; checks from OWASP ASVS 4.0.3 Level 2 chapters V2 (authentication), V3 (sessions), V4 (access control), V5 (validation), V12 (files), V13 (API) | Security test suite plus checklist ([06-SECURITY §8](06-SECURITY.md#8-verification)) |
 | NFR-A11Y-01 | Accessibility | WCAG 2.2 AA; zero serious or critical axe violations on every screen; every function operable by keyboard; visible focus | axe in Playwright plus manual keyboard and screen-reader pass |
-| NFR-MAINT-01 | Code quality gates | ruff, mypy `--strict`, eslint, `tsc --strict` clean | CI gate |
+| NFR-MAINT-01 | Code quality gates | ruff, mypy `--strict`, import-linter, oxlint, Prettier, `tsc --strict` clean | CI gate |
 | NFR-MAINT-02 | Test coverage | Backend domain core ≥ 90% branch; backend overall ≥ 80%; front end ≥ 70% lines | CI gate |
 | NFR-OBS-01 | Diagnosability | Every log line is JSON with `request_id` and, where applicable, `run_id` and `item_id`; every failure has a stable error code | Log schema test |
 | NFR-PORT-01 | Platforms | Windows 11 (primary); Linux and macOS for development | CI matrix |
