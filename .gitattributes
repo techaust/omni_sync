@@ -1,0 +1,16 @@
+# Normalise all text files to LF in the repository and working tree,
+# so Windows development and Linux CI see identical bytes.
+* text=auto eol=lf
+
+# Windows-only scripts keep CRLF.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Binary assets.
+*.png binary
+*.jpg binary
+*.ico binary
+*.woff2 binary
+*.zip binary
+*.db binary

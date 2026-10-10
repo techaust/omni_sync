@@ -1,0 +1,73 @@
+# OmniSync 2.0
+
+**Publish WordPress plugin and theme updates to every WooCommerce store from one browser upload: uploaded to S3 once, linked everywhere, with AI help for the hard cases.**
+
+> **Project status: design phase. No application code exists yet.**
+> This repository currently contains the approved discovery report and the design specification for OmniSync 2.0. Everything under *What it will do* describes **planned** behaviour. Until release, keep using the legacy tool at `../OmniSync`. Progress is tracked in the [roadmap](docs/11-ROADMAP.md).
+
+## What it will do
+
+You drop vendor ZIP files into the browser. For each one, OmniSync:
+
+1. identifies the WordPress installable and its version (plugins, themes, Envato wrappers, nested bundles);
+2. matches it to the right product in every configured store;
+3. uploads it **once** to S3 as `<slug>-<version>.zip`;
+4. points each store's download button at that object, then verifies the change;
+5. removes the superseded object when nothing references it any more.
+
+Anything it cannot decide safely becomes a clear question in a **Needs input** queue instead of a silent error:
+
+- an unknown product, with ranked suggestions
+- a missing button name
+- an older version than the one already live
+- an ambiguous download entry
+
+An optional AI assistant ranks candidates, explains failures and answers questions about your runs. It can propose actions, but you approve every change.
+
+| Area | Planned capability |
+|---|---|
+| Inbox | Drag-and-drop upload, watched folder, automatic inspection with per-store match preview |
+| Runs | Dry-run plan, then confirm a live run; live progress; history; export |
+| Safety | Plan confirmation, downgrade holds, reference-checked deletion, typed confirmation for cleanup, append-only audit log |
+| Two PCs | Owner and colleague each run their own instance, coordinated through an S3 lease and shared rules |
+| AI | Unmapped-archive resolver, button-name suggestions, run triage, assistant with approval-gated tools, budgets |
+| Operations | Health page, backups and restore, legacy import, Windows auto-start |
+
+## Documentation
+
+Start with the **[documentation index](docs/README.md)**. Key documents:
+
+| If you want to… | Read |
+|---|---|
+| Understand the legacy tool and why it is being rebuilt | [01 – Discovery report](docs/01-DISCOVERY-REPORT.md) |
+| Know exactly what 2.0 must do | [02 – Product requirements](docs/02-PRODUCT-REQUIREMENTS.md) |
+| Understand how it is built | [03 – Architecture](docs/03-ARCHITECTURE.md) and [ADRs](docs/adr/README.md) |
+| Review security | [06 – Security and threat model](docs/06-SECURITY.md) |
+| Review the AI design | [07 – AI design](docs/07-AI-DESIGN.md) |
+| Install and operate it (after release) | [10 – Operations guide](docs/10-OPERATIONS.md) |
+| See progress and what is next | [11 – Roadmap and traceability](docs/11-ROADMAP.md) |
+
+## Planned technology
+
+Python 3.12 · FastAPI · SQLite · React + TypeScript · Tailwind CSS · shadcn/ui on Radix UI (zinc + indigo theme, light/dark) · Anthropic / OpenAI (optional). The reasons are in [03-ARCHITECTURE §10](docs/03-ARCHITECTURE.md#10-technology-choices).
+
+## Checking the documentation
+
+The documentation is verified automatically (links, anchors, identifiers, traceability, legacy citations):
+
+```bash
+python scripts/check_docs.py
+npx --yes markdownlint-cli2 "**/*.md"
+```
+
+See the [documentation standard](docs/DOCUMENTATION-STANDARD.md) for the criteria.
+
+## Contributing and security
+
+- How to contribute: [CONTRIBUTING.md](CONTRIBUTING.md)
+- How to report a vulnerability: [SECURITY.md](SECURITY.md)
+- Release history: [CHANGELOG.md](CHANGELOG.md)
+
+## License
+
+GPL-3.0-only. See [LICENSE](LICENSE) and [ADR-0011](docs/adr/0011-license-gpl-3.md). Copyright © 2026 TecHaust Technologies.

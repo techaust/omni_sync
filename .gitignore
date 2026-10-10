@@ -1,0 +1,29 @@
+# Runtime data and secrets (never commit)
+data/
+*.db
+*.db-wal
+*.db-shm
+.env
+*.env
+omnisync.toml
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Node / front end
+node_modules/
+frontend/dist/
+playwright-report/
+test-results/
+
+# Reports and local artefacts
+reports/
+evals/reports/
+*.log

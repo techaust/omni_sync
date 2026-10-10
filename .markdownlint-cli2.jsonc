@@ -1,0 +1,12 @@
+{
+  // markdownlint rules: https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
+  "config": {
+    "default": true,
+    "MD013": false,          // line length: tables and long URLs are intentional
+    "MD024": { "siblings_only": true },
+    "MD033": false,          // inline HTML is not used, but allow <br> in tables if needed
+    "MD041": true,           // first line must be a top-level heading
+    "MD060": false           // table column alignment: compact tables are intentional
+  },
+  "ignores": ["node_modules/**", ".venv/**", "frontend/dist/**", "LICENSE"]
+}
