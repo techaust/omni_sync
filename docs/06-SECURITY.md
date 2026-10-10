@@ -1,6 +1,6 @@
 # Security Design and Threat Model
 
-> **Status:** Proposed · **Owner:** TecHaust Technologies (@techaust) · **Last reviewed:** 2026-10-11 · **Audience:** engineers, reviewers, the owner
+> **Status:** Accepted (approved design, not yet implemented) · **Owner:** TecHaust Technologies (@techaust) · **Last reviewed:** 2026-10-11 · **Audience:** engineers, reviewers, the owner
 
 This document identifies what OmniSync must protect, the threats against it, and the controls that address each threat. To report a vulnerability, see [SECURITY.md](../SECURITY.md).
 
@@ -58,8 +58,8 @@ Every endpoint and every AI tool declares exactly one permission ID from this ta
 | `account.self` | Own password, preferences, logout | ✓ | ✓ | ✓ |
 | `ai.use` | Assistant with `read` tools; own conversations, memory and usage view; AI status | ✓ | ✓ | ✓ |
 | `archives.write` | Upload, re-inspect, trash and restore archives | | ✓ | ✓ |
-| `runs.write` | Create dry and live pipeline runs; cancel; resume; refresh catalog | | ✓ | ✓ |
-| `needs_input.resolve` | Resolve, dismiss and request suggestions for needs-input items (including `propose` tools) | | ✓ | ✓ |
+| `runs.write` | Create dry and live pipeline runs; cancel; resume; refresh catalog; request AI triage of run items (`explain_run_item`) | | ✓ | ✓ |
+| `needs_input.resolve` | Resolve, dismiss and request suggestions for needs-input items (including the needs-input `propose` tools) | | ✓ | ✓ |
 | `rules.write` | Create, edit and delete aliases, overrides and download names | | ✓ | ✓ |
 | `ai.approve` | Approve or reject `approve`-class tool calls; the tool's own permission is also required | | ✓ | ✓ |
 | `cleanup.manage` | Cleanup preview and execute; discard pending deletes | | | ✓ |
@@ -146,7 +146,7 @@ STRIDE categories: **S**poofing, **T**ampering, **R**epudiation, **I**nformation
 | C-13 | argon2id hashing, lockout, login rate limit | FR-AUTH-02 |
 | C-14 | 256-bit random session IDs, rotated at login, hashed at rest, server-side revocation | FR-AUTH-02 |
 | C-15 | S3 conditional-write lease measured in S3 time, with write-deadline checks before every mutating call ([03-ARCHITECTURE §6.2](03-ARCHITECTURE.md#62-lease-protocol)) | FR-COORD-01 |
-| C-16 | Delete only when no **configured** store (enabled or disabled) references the key. Cleanup collects references live from WooCommerce after acquiring the lease. Pipeline finalisation requires every catalog to be younger than 24 h, otherwise it records a pending delete. The control prefix is always excluded. | FR-PIPE-07, FR-CLN-01, FR-CLN-02 |
+| C-16 | Delete only when no **configured** store (enabled or disabled) references the key. Cleanup collects references live from WooCommerce after acquiring the lease. Pipeline finalisation requires every catalog to be younger than 26 h, otherwise it records a pending delete. The control prefix is always excluded. | FR-PIPE-07, FR-CLN-01, FR-CLN-02 |
 | C-17 | Idempotent pre-checks before every external write (live-state comparison) | FR-PIPE-09 |
 | C-18 | Shared-config writes use ETag preconditions, schema validation on pull (an invalid document is rejected and the last good copy kept), and a 500-entry change history | FR-COORD-03 |
 | C-19 | Append-only local audit log (database triggers) plus write-once shared audit objects | FR-AUD-01, FR-COORD-04 |

@@ -1,6 +1,6 @@
 # AI Design
 
-> **Status:** Proposed · **Owner:** TecHaust Technologies (@techaust) · **Last reviewed:** 2026-10-11 · **Audience:** engineers, the owner
+> **Status:** Accepted (approved design, not yet implemented) · **Owner:** TecHaust Technologies (@techaust) · **Last reviewed:** 2026-10-11 · **Audience:** engineers, the owner
 
 This document specifies where OmniSync uses AI, how AI is constrained, and how its value is measured. Requirements: FR-AI-01…09 and NFR-AI-01…03 in [02-PRODUCT-REQUIREMENTS](02-PRODUCT-REQUIREMENTS.md#414-ai-capabilities). Decision record: [ADR-0008](adr/0008-ai-gateway-and-approval.md).
 

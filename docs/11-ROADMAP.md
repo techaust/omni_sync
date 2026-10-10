@@ -31,7 +31,7 @@
 | 2026-10-11 | Import legacy data; retire legacy CLI after cutover | [10-OPERATIONS §9](10-OPERATIONS.md#9-cutover-from-legacy) |
 | 2026-10-11 | Port from the legacy working tree as found, including the uncommitted mapping-healing change (`legacy:omnisync/mappings.py:53-116`). The legacy repository will be deleted after the project is complete. (Owner confirmation; resolves Q5.) | [01-DISCOVERY-REPORT §12](01-DISCOVERY-REPORT.md#12-constraints-and-risks) |
 | 2026-10-11 | Design (Milestone 2) approved by the owner | This roadmap, section 1 |
-| 2026-10-11 | Source repository `https://github.com/techaust/omni_sync` (public, default branch `main`); the rebuild is built from scratch in this repository | [README](../README.md) |
+| 2026-10-11 | Source repository `https://github.com/techaust/omni_sync` (public, default branch `main`); a new repository built up from an empty tree; the domain core and its tests are ported from legacy ([ADR-0002](adr/0002-python-fastapi-backend.md)) | [README](../README.md) |
 
 ### 2.2 Open questions
 
@@ -99,7 +99,7 @@ Verification abbreviations: **U** unit, **P** property, **I** integration, **E**
 | FR-CAT-01 | [03 §4](03-ARCHITECTURE.md#4-components-c4-level-3-backend) `core/catalog.py` | 4a, 4b | U, I, parity |
 | FR-CAT-02 | [05 §4.6](05-API-SPEC.md#46-catalog-and-rules) | 4b, 4c | I, E, B |
 | FR-CAT-03 | [04 §2.2](04-DATA-MODEL.md#22-stores-and-catalog) | 4b, 4c | I |
-| FR-CAT-04 | [03 ?5.2](03-ARCHITECTURE.md#52-item-stages-live-pipeline), [04 ?2.2](04-DATA-MODEL.md#22-stores-and-catalog) | 4b | I |
+| FR-CAT-04 | [03 §5.2](03-ARCHITECTURE.md#52-item-stages-live-pipeline), [04 §2.2](04-DATA-MODEL.md#22-stores-and-catalog) | 4b | I |
 | FR-RULE-01 | [05 §4.6](05-API-SPEC.md#46-catalog-and-rules) | 4b, 4c | I, E |
 | FR-RULE-02 | [03 §6.3](03-ARCHITECTURE.md#63-shared-config) | 4b | I, P |
 | FR-RULE-03 | [04 §2.3](04-DATA-MODEL.md#23-rules-local-cache-of-shared-config) | 4b, 4c | I |

@@ -1,6 +1,6 @@
 # API Specification
 
-> **Status:** Proposed · **Owner:** TecHaust Technologies (@techaust) · **Last reviewed:** 2026-10-11 · **Audience:** backend and front-end engineers, testers
+> **Status:** Accepted (approved design, not yet implemented) · **Owner:** TecHaust Technologies (@techaust) · **Last reviewed:** 2026-10-11 · **Audience:** backend and front-end engineers, testers
 
 This is the HTTP contract between the SPA and the backend. Once implemented, the generated OpenAPI document at `/api/v1/openapi.json` is authoritative and the TypeScript client is generated from it. This document must change in the same PR as any contract change.
 

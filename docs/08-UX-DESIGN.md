@@ -1,6 +1,6 @@
 # UX Design
 
-> **Status:** Proposed · **Owner:** TecHaust Technologies (@techaust) · **Last reviewed:** 2026-10-11 · **Audience:** front-end engineers, designers, the owner
+> **Status:** Accepted (approved design, not yet implemented) · **Owner:** TecHaust Technologies (@techaust) · **Last reviewed:** 2026-10-11 · **Audience:** front-end engineers, designers, the owner
 
 This document defines the information architecture, the key screens, the interaction patterns and the accessibility requirements of the browser application. High-fidelity designs are produced in Milestone 4c from these wireframes and must not contradict them without updating this document.
 
@@ -149,28 +149,39 @@ Requirements: FR-AI-05 to FR-AI-08.
 
 ### 5.1 Colour tokens
 
-Contrast ratios were computed with the WCAG 2.x relative-luminance formula on 2026-10-11. Required: text ≥ 4.5:1 (1.4.3); UI-component boundaries and focus indicators ≥ 3:1 (1.4.11). The background for each ratio is `background` unless stated.
+Contrast ratios were computed with the WCAG 2.x relative-luminance formula on 2026-10-11. Required: text ≥ 4.5:1 (1.4.3); UI-component boundaries and focus indicators ≥ 3:1 (1.4.11).
 
-| Token | Use | Light | Ratio | Dark | Ratio |
+Surface tokens:
+
+| Token | Use | Light | Dark |
+|---|---|---|---|
+| `background` | Page | `#FFFFFF` | `#09090B` (zinc-950) |
+| `card` / `popover` | Cards, menus, dialogs | `#FFFFFF` | `#18181B` (zinc-900) |
+| `muted` / `secondary` / `accent` | Inactive tabs, hovered rows, secondary buttons, status-badge backgrounds | `#F4F4F5` (zinc-100) | `#27272A` (zinc-800) |
+| `border` | Decorative dividers and card outlines (never the only way to identify a control) | `#E4E4E7` (zinc-200) | `#27272A` (zinc-800) |
+
+**Foreground tokens.** Ratios are given against every surface each token is used on. Light surfaces are background/card (`#FFFFFF`) and muted (`#F4F4F5`); dark surfaces are background, card and muted.
+
+| Token | Use | Light value | Light ratios (bg · muted) | Dark value | Dark ratios (bg · card · muted) |
 |---|---|---|---|---|---|
-| `background` | Page | `#FFFFFF` | — | `#09090B` (zinc-950) | — |
-| `card` / `popover` | Surfaces | `#FFFFFF` | — | `#18181B` (zinc-900) | — |
-| `foreground` | Body text | `#09090B` (zinc-950) | 19.90 | `#FAFAFA` (zinc-50) | 19.06 |
-| `muted-foreground` | Secondary text, captions | `#71717A` (zinc-500) | 4.83 | `#A1A1AA` (zinc-400) | 7.76 (6.91 on card) |
-| `input` | Form-control borders | `#71717A` (zinc-500) | 4.83 | `#71717A` (zinc-500) | 4.12 |
-| `border` | Decorative dividers and card outlines (not needed to identify a control) | `#E4E4E7` (zinc-200) | decorative | `#27272A` (zinc-800) | decorative |
-| `primary` | Primary buttons, selected state | `#4F46E5` (indigo-600), text `#FFFFFF` | 6.29 | `#818CF8` (indigo-400), text `#09090B` | 6.67 |
-| `ring` | Focus ring (2 px, offset 2 px) | `#4F46E5` | 6.29 | `#818CF8` | 6.67 |
-| `link` | Links | `#4F46E5` | 6.29 | `#818CF8` | 6.67 (5.94 on card) |
-| `success` | Completed | `#15803D` (green-700) | 5.02 | `#4ADE80` (green-400) | 11.42 |
-| `warning` | Needs input, partial | `#B45309` (amber-700) | 5.02 | `#FBBF24` (amber-400) | 11.92 |
-| `danger` | Failed, destructive actions | `#B91C1C` (red-700) | 6.47 | `#F87171` (red-400) | 7.19 |
-| `info` | Running, informational | `#2563EB` (blue-600) | 5.17 | `#60A5FA` (blue-400) | 7.83 |
+| `foreground` | Body text | `#09090B` | 19.90 · 18.10 | `#FAFAFA` | 19.06 · 16.97 · 14.27 |
+| `muted-foreground` | Secondary text, captions | `#52525B` (zinc-600) | 7.73 · 7.03 | `#A1A1AA` (zinc-400) | 7.76 · 6.91 · 5.81 |
+| `input` | Form-control borders (≥ 3:1) | `#71717A` (zinc-500) | 4.83 · 4.40 | `#71717A` (zinc-500) | 4.12 · 3.67 · 3.08 |
+| `primary` (fill) with `primary-foreground` text | Primary buttons, selected state | `#4F46E5` with `#FFFFFF` | 6.29 (text on fill) | `#818CF8` with `#09090B` | 6.67 (text on fill) |
+| `ring` / `link` | Focus ring (2 px, offset 2 px), links | `#4F46E5` | 6.29 · 5.72 | `#818CF8` | 6.67 · 5.94 · 4.99 |
+| `destructive` (fill) with `destructive-foreground` text | Destructive buttons | `#B91C1C` with `#FFFFFF` | 6.47 (text on fill) | `#F87171` with `#09090B` | 7.19 (text on fill) |
+| `success` | Completed | `#15803D` (green-700) | 5.02 · 4.56 | `#4ADE80` (green-400) | 11.42 · 10.17 · 8.55 |
+| `warning` | Needs input, partial | `#B45309` (amber-700) | 5.02 · 4.57 | `#FBBF24` (amber-400) | 11.92 · 10.61 · 8.92 |
+| `danger` | Failed | `#B91C1C` (red-700) | 6.47 · 5.89 | `#F87171` (red-400) | 7.19 · 6.40 · 5.38 |
+| `info` | Running, informational | `#2563EB` (blue-600) | 5.17 · 4.70 | `#60A5FA` (blue-400) | 7.83 · 6.97 · 5.86 |
+
+Status badges render the status colour as text and icon on the `muted` surface.
 
 Departures from shadcn/ui defaults, made for contrast:
 
-- `input` uses zinc-500 in both modes. The stock zinc-200 and zinc-800, and the darker zinc-400 and zinc-600, fail the 3:1 boundary requirement (measured 2.56 and 2.57).
-- The dark `primary` uses near-black text on indigo-400. White on indigo-500 measures 4.47:1 and fails.
+- `input` uses zinc-500 in both modes. The stock light border zinc-200 measures 1.27:1 and the stock dark zinc-800 measures 1.34:1 (Tailwind v3 variant). The newer Tailwind v4 variant uses 10–15% translucent white in dark mode, which is equally low. Intermediate choices also fail: zinc-400 on light measures 2.56:1 and zinc-600 on dark 2.57:1.
+- `muted-foreground` in light mode uses zinc-600, because the stock zinc-500 measures only 4.40:1 on the `muted` surface used by inactive tabs and palette rows.
+- The dark `primary` and `destructive` fills use near-black text, because white on indigo-500 measures 4.47:1 and white on red-400 measures 2.77:1.
 
 ### 5.2 Other tokens
 
@@ -183,9 +194,9 @@ Departures from shadcn/ui defaults, made for contrast:
 | Radius and elevation | 6 px radius (`--radius: 0.375rem`); two elevation levels (popover, dialog) |
 | Status | Every status badge combines an icon, a text label and a colour token. Colour is never the only signal. |
 | Motion | 150–200 ms transitions; disabled when `prefers-reduced-motion` is set |
-| Colour mode | `system` (default), `light`, `dark`; stored per user; applied before first paint to avoid a flash of the wrong theme |
+| Colour mode | `system` (default), `light`, `dark`; stored per user. Applied before first paint without any inline script (which the CSP forbids, C-22): the server renders `index.html` per request and writes `class="light"` or `class="dark"` on `<html>` from the signed-in user's preference. `system` uses no class and is resolved purely in CSS (`@media (prefers-color-scheme: dark) { :root:not(.light) { … } }`). |
 
-Tokens are defined once as CSS variables in `frontend/src/styles/tokens.css` and mapped into Tailwind. A unit test recomputes every contrast ratio in the table above from the token file and fails below threshold. Components are shadcn/ui copies (dialog, dropdown, tabs, tooltip, toast, table, command palette, and others), documented in a component catalogue page available in development builds.
+Tokens are defined once as CSS variables in `frontend/src/styles/tokens.css` and mapped into Tailwind. A unit test recomputes every foreground/surface ratio in section 5.1 from the token file and fails below threshold. Components are shadcn/ui copies (dialog, dropdown, tabs, tooltip, toast, table, command palette, and others), documented in a component catalogue page available in development builds.
 
 ## 6. Responsive behaviour
 

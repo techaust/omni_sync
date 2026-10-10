@@ -1,6 +1,6 @@
 # Data Model
 
-> **Status:** Proposed · **Owner:** TecHaust Technologies (@techaust) · **Last reviewed:** 2026-10-11 · **Audience:** backend engineers, reviewers
+> **Status:** Accepted (approved design, not yet implemented) · **Owner:** TecHaust Technologies (@techaust) · **Last reviewed:** 2026-10-11 · **Audience:** backend engineers, reviewers
 
 This document defines the local SQLite schema, the shared S3 documents, the file-system layout and the legacy import mapping. Column types are SQLite affinities as declared through SQLAlchemy. Every timestamp is a UTC ISO-8601 string (`TEXT`). Alembic migrations are the source of truth once implementation starts; this document must be updated in the same PR as any migration.
 

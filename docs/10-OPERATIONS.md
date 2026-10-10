@@ -1,6 +1,6 @@
 # Operations Guide
 
-> **Status:** Proposed – procedures describe the designed system and will be validated on a clean Windows 11 machine in Milestone 7 · **Owner:** TecHaust Technologies (@techaust) · **Last reviewed:** 2026-10-11 · **Audience:** the owner, the colleague, whoever maintains an installation
+> **Status:** Accepted (approved design) – procedures describe the designed system and will be validated on a clean Windows 11 machine in Milestone 7 · **Owner:** TecHaust Technologies (@techaust) · **Last reviewed:** 2026-10-11 · **Audience:** the owner, the colleague, whoever maintains an installation
 
 **Important:** OmniSync 2.0 is not implemented yet. Commands in this guide do not work until the matching milestone in [11-ROADMAP](11-ROADMAP.md) is complete. Until cutover, keep using the legacy tool.
 

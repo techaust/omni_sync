@@ -1,6 +1,6 @@
 # Testing Strategy
 
-> **Status:** Proposed · **Owner:** TecHaust Technologies (@techaust) · **Last reviewed:** 2026-10-11 · **Audience:** engineers, reviewers
+> **Status:** Accepted (approved design, not yet implemented) · **Owner:** TecHaust Technologies (@techaust) · **Last reviewed:** 2026-10-11 · **Audience:** engineers, reviewers
 
 This document defines how every requirement is verified. Which test covers which requirement is recorded in the [traceability matrix](11-ROADMAP.md#3-traceability-matrix).
 

@@ -32,7 +32,7 @@ These are the canonical terms. When another document disagrees with this list, t
 | **Operator** | Role that can upload, plan, run, and resolve needs-input items. It cannot change settings, secrets or users, or delete S3 objects. |
 | **Orphan** | An S3 object outside the control prefix that no download entry in any configured store (enabled or disabled) references, according to references collected live from WooCommerce. |
 | **Override (filename override)** | Shared rule mapping an exact archive filename (case-insensitive) to a mapping key. Successor of legacy `data/product-slug-overrides.json`. |
-| **Pending delete** | A superseded object key that was not deleted during a run: because of permissions, a remaining reference, a catalog older than 24 h, or a failed delete. An admin deletes or keeps it through Cleanup. |
+| **Pending delete** | A superseded object key that was not deleted during a run: because of permissions, a remaining reference, a catalog older than 26 h, or a failed delete. An admin deletes or keeps it through Cleanup. |
 | **Plan** | The ordered list of operations a run will perform per archive and store, produced by a dry evaluation. |
 | **Primary download** | The download entry whose button is named `Download` and whose version also sets the product-level `latest_version` meta. |
 | **Run** | A unit of background work with persisted progress. Kinds: `pipeline`, `catalog_refresh`, `cleanup_preview`, `cleanup_execute`, `legacy_import`. |

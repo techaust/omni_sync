@@ -38,14 +38,25 @@ The automated checks cannot detect contradictions or technical errors, so an ind
 | 1 | 40: 7 high, 20 medium, 13 low. Examples: the lease safety gap depended on unsynchronised local clocks; a long upload could outlive the lease; a disabled store's references were ignored, so objects it still served could be deleted; a `pending_delete` resolution path bypassed cleanup safeguards; the colleague's role was described inconsistently; a dry run with any needs-input item blocked every live run. | All 40 addressed |
 | 2 (verification) | 35 of 39 confirmed resolved (the 40th was this audit file); 3 not fully resolved and 11 new issues found. The most important: the lease argument assumed a 60 s per-call bound that HTTP client timeouts do not provide; the 24 h catalog-age rule had no automatic refresh behind it; a viewer-level AI tool could create suggestions. | All 14 addressed (total per-call deadline with 8 MiB parts and a minimum bandwidth; new requirement FR-CAT-04 for daily refresh; tool permission corrected; plus the 11 smaller items) |
 
-The round-2 fixes were verified by the automated checks and by the author's targeted search for every affected term. A third independent review was not performed and is recommended at owner review (section 3).
+The round-2 fixes were verified by the automated checks and by the author's targeted search for every affected term. A third independent review was performed at the start of Milestone 3 (section 1.4).
 
-### 1.4 Rubric result
+### 1.4 Third review round (start of Milestone 3)
+
+The same reviewer confirmed all 14 round-2 items as resolved. It independently recomputed every contrast ratio in [08-UX-DESIGN §5.1](08-UX-DESIGN.md#51-colour-tokens) (all correct) and found 10 new issues: 2 medium and 8 low.
+
+The two medium issues were:
+
+- **Pre-paint theming:** no mechanism compatible with the CSP had been specified. It is now resolved by rendering the theme class on the server plus CSS media queries.
+- **Status labels:** design documents were still marked *Proposed* after owner approval.
+
+Among the low issues was a real contrast failure: stock `muted-foreground` on the `muted` surface measured 4.40:1. The colour table now covers every foreground/surface pair the components use. All 10 issues were addressed.
+
+### 1.5 Rubric result
 
 | # | Dimension | Result | Evidence and notes |
 |---|---|---|---|
 | Q1 | Accuracy | **Pass** | 110 legacy citations verified mechanically. Legacy figures (194 tests, 74.05% coverage, 2,387 keys, 110 slug records) come from execution and data inspection on 2026-10-11. The S3 conditional-write capability was confirmed in the AWS S3 User Guide. |
-| Q2 | Honesty | **Pass** | Root README and the operations guide carry "not implemented" banners. Design documents are marked *Proposed*. The one decision made without owner confirmation (the legacy baseline) is labelled an assumption (Q5). Response-time targets in SECURITY.md are marked pending (Q4). |
+| Q2 | Honesty | **Pass** | Root README and the operations guide carry "not implemented" banners. Design documents are marked *Accepted (approved design, not yet implemented)*. Response-time targets in SECURITY.md are marked pending (Q4). |
 | Q3 | Completeness | **Pass** | 95 of 95 requirements traced; 20 of 20 threats mitigated; 13 of 13 ADRs complete; parity checklist covers every legacy command and OpenCode artifact. |
 | Q4 | Consistency | **Pass** | Zero undefined or duplicate IDs. Two review rounds targeted cross-document contradictions. Glossary updated for every changed concept (lease, catalog, orphan, pending delete, needs-input item). |
 | Q5 | Navigability | **Pass** | Zero broken links or anchors; zero orphans; index with reading order and per-role paths. |
@@ -62,5 +73,4 @@ The round-2 fixes were verified by the automated checks and by the author's targ
 
 ## 3. Recommended next audit actions
 
-1. A third independent semantic review of the round-2 fixes and ADR-0013 (scheduled at the start of Milestone 3).
-2. Add `check_docs.py`, its tests and markdownlint to CI in Milestone 3.
+1. Add `check_docs.py`, its tests and markdownlint to CI in Milestone 3.

@@ -1,6 +1,6 @@
 # Architecture
 
-> **Status:** Proposed · **Owner:** TecHaust Technologies (@techaust) · **Last reviewed:** 2026-10-11 · **Audience:** engineers and reviewers
+> **Status:** Accepted (approved design, not yet implemented) · **Owner:** TecHaust Technologies (@techaust) · **Last reviewed:** 2026-10-11 · **Audience:** engineers and reviewers
 
 This document describes how OmniSync 2.0 is built to satisfy [02-PRODUCT-REQUIREMENTS](02-PRODUCT-REQUIREMENTS.md). The decisions behind it are recorded in the [ADRs](adr/README.md). Data structures are in [04-DATA-MODEL](04-DATA-MODEL.md) and the HTTP contract is in [05-API-SPEC](05-API-SPEC.md).
 
@@ -74,6 +74,7 @@ flowchart TB
 
 ```text
 backend/omnisync/
+  (source lives under backend/src/omnisync/; the src layout keeps tests from importing the working tree by accident)
   core/            pure domain logic, no I/O except reading archive bytes
     archive.py       safe ZIP reader (limits, spooling)          FR-MATCH-05
     versions.py      layer 1/2/3 + deep scan, PEP 440 compare     FR-MATCH-01
@@ -153,7 +154,7 @@ stateDiagram-v2
 | revalidate | S3 HEAD for the target key; WooCommerce GET for live `latest_version_<slug>`; downgrade check (FR-PIPE-06); entry selection (FR-PIPE-05). Differences from the plan go to needs-input (FR-RUN-04). | yes |
 | upload | Skip if HEAD shows the same `content-md5-hex`. Otherwise use a streamed PUT (≤ 8 MiB) or a multipart upload with 8 MiB parts, with metadata. 404 is the only "missing" (FR-PIPE-03). The lease write deadline is checked before every part (section 6.2); if it has passed, the multipart upload is aborted. | yes |
 | sync_stores | Per store: product lock → GET → modify → PUT → verify (FR-PIPE-04). Stores proceed independently; the breaker isolates outages. The write deadline is checked before every PUT. | yes, between stores |
-| finalize | If all enabled stores are complete: reference-check the old key against the catalog of **every configured store, enabled or disabled**. Delete only if no other entry references it, every catalog is younger than 24 h (kept fresh by the automatic daily refresh, FR-CAT-04), and the credentials permit it; otherwise record a pending delete (FR-PIPE-07). Then move the archive (FR-PIPE-08). | — |
+| finalize | If all enabled stores are complete: reference-check the old key against the catalog of **every configured store, enabled or disabled**. Delete only if no other entry references it, every catalog is younger than 26 h (kept fresh by the automatic daily refresh, FR-CAT-04), and the credentials permit it; otherwise record a pending delete (FR-PIPE-07). Then move the archive (FR-PIPE-08). | — |
 
 **Write deadline.** Every mutating external call checks the lease write deadline immediately before it is sent: S3 PUT, part upload, complete-multipart, delete, and WooCommerce PUT. Each mutating call also has a **total** deadline of 60 s, enforced by a wrapper that cancels the request. This is in addition to the HTTP library's per-step connect, read and write timeouts, which do not bound a whole request. With at most 8 MiB per call, this requires an upload bandwidth of at least about 1.2 Mbit/s; the supported minimum is 2 Mbit/s ([10-OPERATIONS §1](10-OPERATIONS.md#1-requirements)). Read-only calls are not gated.
 
@@ -288,7 +289,7 @@ sequenceDiagram
 | **Time** | UTC everywhere. The UI renders local time with a UTC tooltip. |
 | **IDs** | Integer primary keys internally; run IDs shown as `R-418`; instance ID is a UUIDv4 generated at first start. |
 | **Validation** | Pydantic models at the API boundary; Zod on the client for form UX only (the server is authoritative). |
-| **Static assets** | The SPA is built to `frontend/dist` and served by FastAPI with hashed filenames and immutable caching. `index.html` is served per request with a fresh CSP nonce, injected into a `<meta property="csp-nonce">` tag and passed to libraries that insert `<style>` elements (Radix scroll-lock through `get-nonce`), so the CSP needs no `unsafe-inline` ([06-SECURITY](06-SECURITY.md#7-security-controls) C-22). |
+| **Static assets** | The SPA is built to `frontend/dist` and served by FastAPI with hashed filenames and immutable caching. `index.html` is served per request with the signed-in user's colour-mode class on `<html>` (pre-paint theming without inline script, [08-UX-DESIGN §5.2](08-UX-DESIGN.md#52-other-tokens)) and a fresh CSP nonce, injected into a `<meta property="csp-nonce">` tag and passed to libraries that insert `<style>` elements (Radix scroll-lock through `get-nonce`), so the CSP needs no `unsafe-inline` ([06-SECURITY](06-SECURITY.md#7-security-controls) C-22). |
 | **Events** | One `events` table (global IDs, optional `run_id`) feeds the run timelines, the global SSE stream and the notification centre ([04-DATA-MODEL §2.4](04-DATA-MODEL.md#24-intake-and-processing)). In the browser, one `SharedWorker` holds a single SSE connection that all tabs share, so the per-origin HTTP/1.1 connection limit is never exhausted. Where `SharedWorker` is unavailable, each tab opens one stream. |
 
 ## 9. Deployment view
