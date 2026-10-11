@@ -27,8 +27,12 @@ def test_security_headers(client: TestClient) -> None:
     assert "default-src 'self'" in csp
     assert "script-src 'self'" in csp
     assert "frame-ancestors 'none'" in csp
-    assert "unsafe-inline" not in csp
-    assert "'nonce-" in csp
+    directives = {d.split()[0]: d for d in (part.strip() for part in csp.split(";"))}
+    # Scripts and style elements never allow inline code; only style attributes do (ADR-0015).
+    assert "unsafe-inline" not in directives["script-src"]
+    assert "unsafe-inline" not in directives["style-src"]
+    assert directives["style-src-attr"] == "style-src-attr 'unsafe-inline'"
+    assert "'nonce-" in directives["style-src"]
     assert headers["x-content-type-options"] == "nosniff"
     assert headers["referrer-policy"] == "no-referrer"
     assert headers["x-frame-options"] == "DENY"

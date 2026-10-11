@@ -27,6 +27,10 @@ def content_security_policy(nonce: str) -> str:
             "default-src 'self'",
             "script-src 'self'",
             f"style-src 'self' 'nonce-{nonce}'",
+            # Inline style *attributes* only (no selectors, so no CSS-based exfiltration). Needed
+            # because WebKit enforces CSP on style attributes that Radix/React set (ADR-0015).
+            # <style> elements and stylesheets stay nonce-based via style-src above.
+            "style-src-attr 'unsafe-inline'",
             "img-src 'self' data:",
             "font-src 'self'",
             "connect-src 'self'",

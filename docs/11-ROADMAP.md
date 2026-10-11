@@ -7,7 +7,7 @@
 | M | Name | Deliverables | Exit criteria | Status |
 |---|---|---|---|---|
 | 1 | Discovery | [01-DISCOVERY-REPORT](01-DISCOVERY-REPORT.md) | Report reviewed; decisions recorded | **Done** (2026-10-11) |
-| 2 | Product and architecture design | Documents 02–10, ADRs 0001–0013 (0014 added in M3), glossary, documentation standard and checker | `scripts/check_docs.py` and markdownlint clean; owner approval | **Done** (approved by the owner 2026-10-11) |
+| 2 | Product and architecture design | Documents 02–10, ADRs 0001–0013 (0014 and 0015 added in M3), glossary, documentation standard and checker | `scripts/check_docs.py` and markdownlint clean; owner approval | **Done** (approved by the owner 2026-10-11) |
 | 3 | Foundation | Repo layout (`backend/`, `frontend/`), uv and npm lockfiles, lint/type/test tooling, CI workflow, SQLite + Alembic baseline, settings, auth (setup, login, sessions, CSRF, Host check), SPA shell with navigation and design tokens, docs check in CI | CI green; login E2E passes; permission-matrix test skeleton runs | **In progress** |
 | 4a | Domain port | `core/` archive, versions, slugs, matching, catalog, shortcodes; legacy tests ported; parity harness | Ported tests pass; differential inspection matches on the corpus | Not started |
 | 4b | Services and runner | S3, WooCommerce, secrets, lease, shared config, job runner, pipeline, catalog refresh, cleanup, legacy import; D-01…D-05 fixed | Integration suite green; differential planning matches; chaos tests pass | Not started |
@@ -32,6 +32,8 @@
 | 2026-10-11 | Port from the legacy working tree as found, including the uncommitted mapping-healing change (`legacy:omnisync/mappings.py:53-116`). The legacy repository will be deleted after the project is complete. (Owner confirmation; resolves Q5.) | [01-DISCOVERY-REPORT §12](01-DISCOVERY-REPORT.md#12-constraints-and-risks) |
 | 2026-10-11 | Design (Milestone 2) approved by the owner | This roadmap, section 1 |
 | 2026-10-11 | Milestone 3 implementation adjustments: SQLAlchemy without compiled extensions, `python -m` invocation, httpx2, oxlint, shadcn Nova preset, CSP and focus-ring fixes to generated components | [ADR-0014](adr/0014-milestone-3-implementation-adjustments.md) |
+| 2026-10-11 | CSP allows inline style attributes (`style-src-attr 'unsafe-inline'`) after WebKit end-to-end runs found violations; style elements and scripts stay strict | [ADR-0015](adr/0015-csp-style-attributes.md) |
+| 2026-10-11 | Request transactions commit before the response is sent (bug found by the WebKit end-to-end run; regression tests added) | `backend/tests/test_transactions.py` |
 | 2026-10-11 | Source repository `https://github.com/techaust/omni_sync` (public, default branch `main`); a new repository built up from an empty tree; the domain core and its tests are ported from legacy ([ADR-0002](adr/0002-python-fastapi-backend.md)) | [README](../README.md) |
 
 ### 2.2 Open questions
