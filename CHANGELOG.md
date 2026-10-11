@@ -22,7 +22,14 @@ All notable changes to this project are documented here. The format follows [Kee
 - `THIRD-PARTY-NOTICES.md` and bundled licence texts for fonts and the password list.
 - ADR-0014 recording the implementation adjustments discovered while building Milestone 3, and ADR-0015 allowing inline style attributes in the CSP (WebKit).
 
+- **Milestone 4a domain core** (`backend/src/omnisync/core/`): safe archive inspection with size, entry, depth and ratio limits; version and slug detection; N-store matching cascade and candidate choice; catalog building, healing, paging decisions and conflict detection; shortcode and download-entry parsing. 65 legacy tests ported, plus property tests (Hypothesis).
+- Differential parity test against the legacy code (`backend/tests/parity/`, runs when `OMNISYNC_LEGACY_ROOT` is set): 91 archives, identical except the 4 differences in ADR-0016.
+- CI gate for 90% branch coverage of `core/`, and an import-linter contract keeping `core/` free of I/O libraries.
+
 ### Fixed
+
+- D-03: nested payloads are spooled to temporary files instead of being held in memory.
+- D-02 (domain rule): a product with several download entries and no slug match is reported as `ambiguous_entry` instead of falling back to the button name.
 
 - Request transactions are committed before the HTTP response is sent. FastAPI ran `yield`-dependency cleanup after the response by default, so a fast follow-up read could miss a write and a failed commit could be reported as success. Found by the WebKit end-to-end run; covered by `backend/tests/test_transactions.py`.
 

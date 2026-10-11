@@ -2,7 +2,7 @@
 
 **Publish WordPress plugin and theme updates to every WooCommerce store from one browser upload: uploaded to S3 once, linked everywhere, with AI help for the hard cases.**
 
-> **Project status: Milestone 3 (foundation) complete; Milestone 4a next.** The design is approved. What exists today is the application foundation: the server, database, sign-in, users and roles, the browser shell, and the test and CI pipeline. **No publishing features exist yet.** Everything under *What it will do* is planned, so keep using the legacy tool at `../OmniSync` for publishing until release. Progress is tracked in the [roadmap](docs/11-ROADMAP.md).
+> **Project status: Milestones 3 (foundation) and 4a (domain core) complete; Milestone 4b next.** The design is approved. What exists today is the application foundation: the server, database, sign-in, users and roles, the browser shell, and the test and CI pipeline. **No publishing features exist yet.** Everything under *What it will do* is planned, so keep using the legacy tool at `../OmniSync` for publishing until release. Progress is tracked in the [roadmap](docs/11-ROADMAP.md).
 
 ## What it will do
 

@@ -9,7 +9,7 @@
 | 1 | Discovery | [01-DISCOVERY-REPORT](01-DISCOVERY-REPORT.md) | Report reviewed; decisions recorded | **Done** (2026-10-11) |
 | 2 | Product and architecture design | Documents 02–10, ADRs 0001–0013 (0014 and 0015 added in M3), glossary, documentation standard and checker | `scripts/check_docs.py` and markdownlint clean; owner approval | **Done** (approved by the owner 2026-10-11) |
 | 3 | Foundation | Repo layout (`backend/`, `frontend/`), uv and npm lockfiles, lint/type/test tooling, CI workflow, SQLite + Alembic baseline, settings, auth (setup, login, sessions, CSRF, Host check), SPA shell with navigation and design tokens, docs check in CI | CI green; login E2E passes; permission-matrix test skeleton runs | **Done** (2026-10-11): [CI run 38120836246](https://github.com/techaust/omni_sync/actions/runs/38120836246) green. Backend 91 tests, 94.3% branch coverage on Ubuntu and Windows; front end 97 tests including 74 WCAG contrast checks; end-to-end 15 passed (5 scenarios × Chromium, Firefox, WebKit) with zero serious axe and zero CSP violations; full permission matrix (12 endpoints × 3 roles + anonymous) |
-| 4a | Domain port | `core/` archive, versions, slugs, matching, catalog, shortcodes; legacy tests ported; parity harness | Ported tests pass; differential inspection matches on the corpus | Not started |
+| 4a | Domain port | `core/` archive, versions, slugs, matching, catalog, shortcodes; legacy tests ported; parity harness | Ported tests pass; differential inspection matches on the corpus | **Done** (2026-10-11): 65 legacy tests ported (29 extractor, 4 slugify, 17 mappings, 7 `choose_candidate`, 8 entry matching; 6 HTTP-dependent mapping tests deferred to 4b). Differential inspection: 91 archives, 0 unexpected differences, 4 allow-listed per [ADR-0016](adr/0016-milestone-4a-domain-port.md). 353 backend tests, 97.1% branch coverage; `core/` 99% |
 | 4b | Services and runner | S3, WooCommerce, secrets, lease, shared config, job runner, pipeline, catalog refresh, cleanup, legacy import; D-01…D-05 fixed | Integration suite green; differential planning matches; chaos tests pass | Not started |
 | 4c | User interface | All screens in [08-UX-DESIGN](08-UX-DESIGN.md); SSE; command palette; notifications | Playwright journeys pass; axe clean | Not started |
 | 5 | AI | Gateway, providers, budgets, tools, approval flow, resolver, triage, assistant, memory, eval harness | NFR-AI targets met (or AI-1 auto-suggest stays off with the gap documented); tool-permission tests pass | Not started |
@@ -74,7 +74,7 @@ Legacy defects D-01…D-10 are tracked in [01-DISCOVERY-REPORT §5](01-DISCOVERY
 
 ### 2.5 Implementation status by requirement
 
-Only requirements with code and passing tests are listed. Everything not listed is designed but not yet implemented. Status as of Milestone 3 (CI run 38120836246).
+Only requirements with code and passing tests are listed. Everything not listed is designed but not yet implemented. Status as of Milestone 4a.
 
 | Requirement | Status | Evidence / what is missing |
 |---|---|---|
@@ -92,7 +92,15 @@ Only requirements with code and passing tests are listed. Everything not listed 
 | NFR-SEC-04 | Partial | Host allow-list, CSRF, Origin, cookie attributes, CSP and headers tested (`test_http_security.py`, e2e); ASVS review in Milestone 6 |
 | NFR-A11Y-01 | Partial | axe on every existing screen and dialog in 3 browsers, zero serious or critical violations; WCAG contrast test on all tokens; keyboard skip-link test; manual NVDA pass in Milestone 6 |
 | NFR-MAINT-01 | Implemented | ruff, mypy `--strict`, import-linter, oxlint, Prettier, `tsc --strict` gates in CI |
-| NFR-MAINT-02 | Implemented (current code) | Backend 94.3% branch, front end 87.5% lines; the `core/` 90% gate applies once `core/` exists (Milestone 4a) |
+| NFR-MAINT-02 | Implemented | Backend 97.1% branch, `core/` 99% branch (CI gate 90%), front end 87.5% lines |
+| FR-MATCH-01 | Implemented (domain) | `core/versions.py`; ported extractor tests; differential test (91 archives) |
+| FR-MATCH-02 | Implemented (domain) | `core/slugs.py`; ported extractor and slugify tests; differential test |
+| FR-MATCH-03 | Implemented (domain) | `core/matching.py` `match_archive`, N stores; `match_method` stored on run items arrives with runs (4b) |
+| FR-MATCH-04 | Implemented (domain) | `core/matching.py` `choose_candidate`; ported legacy tests; differential test |
+| FR-MATCH-05 | Implemented (domain) | `core/archive.py` limits and spooling ([ADR-0016](adr/0016-milestone-4a-domain-port.md)); zip-bomb tests; the NFR-PERF-03 batch measurement arrives in 4b |
+| FR-CAT-01 | Partial | Pure catalog building, healing and paging decisions in `core/catalog.py`; fetching and runs in 4b |
+| FR-CAT-03 | Partial | `core/catalog.py` `detect_conflicts`; UI in 4c |
+| FR-PIPE-05 | Partial | `core/shortcodes.py` `select_download_entry` with the D-02 rule (`behaviour_change("D-02")` test); WooCommerce writes in 4b |
 | NFR-PERF-02 | Partial | Initial JS 169 KB gzip, gated in CI; Lighthouse LCP measurement in Milestone 6 |
 | NFR-PORT-01 | Partial | CI on Ubuntu and Windows; macOS is not in CI |
 | NFR-REL-02 | Partial | WAL and `synchronous=FULL` configured and tested; transactions commit before responses (`test_transactions.py`); chaos tests in Milestone 4b |

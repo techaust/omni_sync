@@ -64,7 +64,7 @@ Priority: **M** = Must (release-blocking), **S** = Should, **C** = Could.
 | FR-MATCH-02 | Detect the slug with legacy parity: parent of `style.css`, then a PHP file with `Plugin Name:`, then readme name, then a cleaned filename with Envato prefix and item ID stripped (`legacy:omnisync/extractor.py:212-261`). | M | As FR-MATCH-01. |
 | FR-MATCH-03 | Match with this cascade: direct slug → alias → filename override → generic filename slug present on **all enabled stores** ([ADR-0010](adr/0010-n-store-model.md)). Record which method matched. | M | Each method is covered by tests, and `match_method` is stored on the run item. |
 | FR-MATCH-04 | Choose among multiple candidates with the legacy priority (full-store match first, then slug contained in the filename, header present, highest version) (`legacy:omnisync/engine.py:257-310`). | M | Ported `choose_candidate` tests pass. |
-| FR-MATCH-05 | Bound resource use while inspecting: stream entries; nested payload cap 768 MiB per archive; at most 10,000 entries; nesting depth ≤ 6; compression ratio ≤ 200:1 per entry; chosen nested payload spooled to a temp file rather than memory (fixes D-03). | M | Zip-bomb fixtures are rejected with `archive.limits_exceeded`. Peak memory meets NFR-PERF-03. |
+| FR-MATCH-05 | Bound resource use while inspecting: stream entries; nested payload cap 768 MiB per archive; at most 10,000 entries; nesting depth ≤ 6; compression ratio ≤ 200:1 per entry of at least 1 MiB uncompressed ([ADR-0016](adr/0016-milestone-4a-domain-port.md)); chosen nested payload spooled to a temp file rather than memory (fixes D-03). | M | Zip-bomb fixtures are rejected with `archive.limits_exceeded`. Peak memory meets NFR-PERF-03. |
 
 ### 4.3 Pipeline
 

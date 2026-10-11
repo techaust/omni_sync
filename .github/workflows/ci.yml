@@ -63,6 +63,8 @@ jobs:
         run: uv run python -c "from importlinter.cli import lint_imports_command; lint_imports_command()"
       - name: Tests with coverage gate
         run: uv run python -m pytest
+      - name: core/ coverage gate (90% branch, 09-TESTING-STRATEGY section 10)
+        run: uv run python -m coverage report --include="*/omnisync/core/*" --fail-under=90
       - name: Dependency audit
         if: matrix.os == 'ubuntu-24.04'
         run: uv run pip-audit --skip-editable

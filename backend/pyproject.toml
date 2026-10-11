@@ -11,6 +11,7 @@ dependencies = [
     "alembic>=1.20.0",
     "argon2-cffi>=25.1.0",
     "fastapi>=0.143.0",
+    "packaging>=24",
     "pydantic-settings>=2.15.0",
     "sqlalchemy>=2.1.4",
     "uvicorn>=0.54.0",
@@ -51,7 +52,11 @@ warn_required_dynamic_aliases = true
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra --strict-markers --cov=omnisync --cov-branch --cov-report=term-missing:skip-covered"
-markers = ["live: requires live external services (never run in CI)"]
+markers = [
+    "live: requires live external services (never run in CI)",
+    "parity: differential legacy-parity test; runs only when OMNISYNC_LEGACY_ROOT is set (09-TESTING-STRATEGY section 4)",
+    "behaviour_change(defect): asserts an intentional change from legacy behaviour (09-TESTING-STRATEGY section 4)",
+]
 filterwarnings = ["error"]
 
 [tool.coverage.report]
@@ -60,18 +65,28 @@ exclude_also = ["if TYPE_CHECKING:", "raise NotImplementedError", "@overload"]
 
 [tool.importlinter]
 root_package = "omnisync"
+include_external_packages = true
 
 [[tool.importlinter.contracts]]
 name = "Architecture layers (03-ARCHITECTURE section 4)"
 type = "layers"
-# Parenthesised layers are optional until they exist (jobs: Milestone 4b, core: Milestone 4a).
-layers = ["omnisync.cli", "omnisync.api", "(omnisync.jobs)", "omnisync.services", "(omnisync.core)"]
+# Parenthesised layers are optional until they exist (jobs: Milestone 4b).
+layers = ["omnisync.cli", "omnisync.api", "(omnisync.jobs)", "omnisync.services", "omnisync.core"]
 containers = []
 exhaustive = false
 
+[[tool.importlinter.contracts]]
+name = "core is pure domain logic (03-ARCHITECTURE section 4)"
+type = "forbidden"
+source_modules = ["omnisync.core"]
+forbidden_modules = ["omnisync.db", "omnisync.security", "omnisync.settings", "omnisync.logging_setup", "sqlalchemy", "requests", "boto3", "httpx", "fastapi"]
+allow_indirect_imports = false
 [dependency-groups]
 dev = [
     "httpx2>=2.13.1",
+    # 6.155.x is the last pure-Python release; later wheels ship an unsigned compiled
+    # module that Windows Smart App Control blocks (docs/11-ROADMAP.md risk R9).
+    "hypothesis>=6.155.7,<6.156",
     "import-linter>=2.15",
     "mypy>=2.4.0",
     "pip-audit>=2.10.1",

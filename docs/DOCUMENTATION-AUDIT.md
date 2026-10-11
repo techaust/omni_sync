@@ -4,6 +4,15 @@
 
 This document records the evidence that the documentation meets the [documentation standard](DOCUMENTATION-STANDARD.md). It is repeated at the end of every milestone and whenever a document's status changes.
 
+## 0a. Audit of 2026-10-11 (end of Milestone 4a)
+
+| Item | Result |
+|---|---|
+| Scope | 40 Markdown files (adds [ADR-0016](adr/0016-milestone-4a-domain-port.md)) |
+| Checker and markdownlint | 0 errors, 0 warnings; 0 issues |
+| Docs-versus-code check | FR-MATCH-05 amended for the ratio-limit scope; [11-ROADMAP §2.5](11-ROADMAP.md#25-implementation-status-by-requirement) updated for the domain requirements; CHANGELOG and README status updated. No API or schema changes in this milestone. |
+| Legacy parity evidence (risk R1, R7) | Differential inspection run locally against the legacy checkout and its venv: 91 archives compared, 0 unexpected differences, 4 allow-listed (ADR-0016). The legacy tree was verified unchanged before and after the run. CI cannot run this test because the legacy repository is not available there. |
+
 ## 0. Audit of 2026-10-11 (end of Milestone 3)
 
 | Item | Result |

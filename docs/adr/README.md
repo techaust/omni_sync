@@ -23,3 +23,4 @@ An ADR records one significant decision: its context, the options considered and
 | [ADR-0013](0013-design-system-shadcn-indigo.md) | Design system based on shadcn/ui with an indigo accent | Accepted (amended by ADR-0014) |
 | [ADR-0014](0014-milestone-3-implementation-adjustments.md) | Implementation adjustments from Milestone 3 | Accepted |
 | [ADR-0015](0015-csp-style-attributes.md) | Allow inline style attributes in the Content Security Policy | Accepted |
+| [ADR-0016](0016-milestone-4a-domain-port.md) | Domain-port decisions from Milestone 4a | Accepted |
