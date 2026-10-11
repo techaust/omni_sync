@@ -26,8 +26,11 @@ All notable changes to this project are documented here. The format follows [Kee
 - Differential parity test against the legacy code (`backend/tests/parity/`, runs when `OMNISYNC_LEGACY_ROOT` is set): 91 archives, identical except the 4 differences in ADR-0016.
 - CI gate for 90% branch coverage of `core/`, and an import-linter contract keeping `core/` free of I/O libraries.
 
+- **Milestone 4b services (in progress):** secrets (environment, then OS keyring; write-only; redacted), S3 client (streamed and multipart uploads, 404-only missing, conditional JSON documents), WooCommerce client (retry, circuit breaker, rate gate, per-product lock, 60 s call deadline, write verification, catalog paging), S3 lease and shared configuration with ETag concurrency. Includes a canary-secret logging test, randomised lease-safety trials and a Hypothesis state machine.
+
 ### Fixed
 
+- D-04: an S3 HEAD that fails with anything other than 404 is an error (s3.access_denied for 403), never "missing".
 - D-03: nested payloads are spooled to temporary files instead of being held in memory.
 - D-02 (domain rule): a product with several download entries and no slug match is reported as `ambiguous_entry` instead of falling back to the button name.
 

@@ -10,7 +10,10 @@ requires-python = ">=3.12,<3.13"
 dependencies = [
     "alembic>=1.20.0",
     "argon2-cffi>=25.1.0",
+    "boto3>=1.43.111",
     "fastapi>=0.143.0",
+    "httpx2>=2.13.1",
+    "keyring>=25.7.0",
     "packaging>=24",
     "pydantic-settings>=2.15.0",
     "sqlalchemy>=2.1.4",
@@ -79,15 +82,15 @@ exhaustive = false
 name = "core is pure domain logic (03-ARCHITECTURE section 4)"
 type = "forbidden"
 source_modules = ["omnisync.core"]
-forbidden_modules = ["omnisync.db", "omnisync.security", "omnisync.settings", "omnisync.logging_setup", "sqlalchemy", "requests", "boto3", "httpx", "fastapi"]
+forbidden_modules = ["omnisync.db", "omnisync.security", "omnisync.settings", "omnisync.logging_setup", "sqlalchemy", "requests", "boto3", "botocore", "httpx", "httpx2", "keyring", "fastapi"]
 allow_indirect_imports = false
 [dependency-groups]
 dev = [
-    "httpx2>=2.13.1",
     # 6.155.x is the last pure-Python release; later wheels ship an unsigned compiled
     # module that Windows Smart App Control blocks (docs/11-ROADMAP.md risk R9).
     "hypothesis>=6.155.7,<6.156",
     "import-linter>=2.15",
+    "moto[s3]>=5.2.3",
     "mypy>=2.4.0",
     "pip-audit>=2.10.1",
     "pytest>=9.1.1",
