@@ -4,6 +4,10 @@
 
 This is the HTTP contract between the SPA and the backend. Once implemented, the generated OpenAPI document at `/api/v1/openapi.json` is authoritative and the TypeScript client is generated from it. This document must change in the same PR as any contract change.
 
+## Implementation status
+
+Implemented in Milestone 3 (verified by `backend/tests`, including the permission matrix): `GET /health`, `GET /health/details` (database, schema and data-folder checks only; the remaining legacy `check` items arrive in Milestone 4b), `GET /setup/status`, `POST /setup`, `POST /auth/login`, `POST /auth/logout`, `GET /auth/me`, `POST /auth/password`, `PATCH /auth/preferences`, `GET /users`, `POST /users`, `PATCH /users/{id}`. Every other endpoint below is designed but not yet implemented; [11-ROADMAP](11-ROADMAP.md#1-milestones) shows when each arrives.
+
 ## 1. Conventions
 
 | Topic | Rule |
@@ -47,11 +51,11 @@ Errors use RFC 9457 Problem Details (`application/problem+json`):
 | 401 | `auth.required`, `auth.session_expired`, `auth.invalid_credentials` (also returned for locked accounts, so lockouts do not reveal usernames) |
 | 403 | `auth.forbidden`, `auth.csrf_failed` |
 | 404 | `resource.not_found` |
-| 409 | `config.conflict`, `run.already_active` (same mutating kind already queued or running on this instance), `plan.stale`, `setup.already_done`, `secret.set_by_environment` |
+| 409 | `config.conflict`, `run.already_active` (same mutating kind already queued or running on this instance), `plan.stale`, `setup.already_done`, `secret.set_by_environment`, `user.exists`, `user.last_admin` (the last active admin cannot be demoted or disabled) |
 | 413 | `archive.too_large` |
 | 415 | `archive.not_zip` |
 | 421 | `request.bad_host` |
-| 422 | `validation.failed`, `rule.unknown_target`, `idempotency.mismatch`, `confirmation.mismatch` |
+| 422 | `validation.failed`, `rule.unknown_target`, `idempotency.mismatch`, `confirmation.mismatch`, `password.weak` (with per-reason `errors`), `setup.invalid_token` |
 | 429 | `rate_limited`, `ai.budget_exceeded` |
 | 500 | `internal` (detail is generic; the full error is only in the logs) |
 | 502/503 | `upstream.s3`, `upstream.woocommerce`, `upstream.ai`, `circuit_open` |
@@ -67,13 +71,13 @@ Minimum role: **V** = viewer, **O** = operator, **A** = admin, **—** = unauthe
 | Method and path | Role | Purpose |
 |---|---|---|
 | `GET /setup/status` | — | `{ "setup_required": bool }` |
-| `POST /setup` | — | `{setup_token, username, display_name, password}` creates the first admin. Returns 409 once any user exists. |
+| `POST /setup` | — | `{setup_token, username, display_name, password}` creates the first admin, signs them in (sets the session cookie) and returns `me` (201). Returns 409 once any user exists. |
 | `POST /auth/login` | — | `{username, password}` sets the cookie and returns `me` |
 | `POST /auth/logout` | V | Revokes the session |
-| `GET /auth/me` | V | `{id, username, display_name, role, preferences, csrf_token, instance: {id, name}}` |
+| `GET /auth/me` | V | `{id, username, display_name, role, permissions: [permission IDs], preferences, csrf_token, instance: {id, name}}`. `permissions` lets the UI hide actions; the server still enforces every check. |
 | `POST /auth/password` | V | `{current_password, new_password}`; revokes other sessions |
 | `PATCH /auth/preferences` | V | Theme, density, notifications |
-| `GET /users` · `POST /users` · `PATCH /users/{id}` | A | Manage users (role, disable, reset password) |
+| `GET /users` · `POST /users` · `PATCH /users/{id}` | A | List; create `{username, display_name, role, password}`; update `{display_name?, role?, disabled?, new_password?}` (disabling or resetting signs the user out everywhere) |
 
 ### 4.2 Dashboard and health
 
@@ -81,7 +85,7 @@ Minimum role: **V** = viewer, **O** = operator, **A** = admin, **—** = unauthe
 |---|---|---|
 | `GET /dashboard` | V | Aggregated widget data (FR-UX-01) |
 | `GET /health` | — | `{status: "ok"}` liveness only, no details |
-| `GET /health/details` | V | Legacy `check` parity (FR-OBS-01). Credentials are reported as configured or missing only; secret sources are admin-only (`GET /secrets`) and values are never returned. |
+| `GET /health/details` | V | `{version, instance, checks: [{name, ok, detail}]}`; legacy `check` parity (FR-OBS-01). Credentials are reported as configured or missing only; secret sources are admin-only (`GET /secrets`) and values are never returned. |
 | `GET /coordination` | V | Lease holder and shared-config version (FR-COORD-02) |
 
 ### 4.3 Archives

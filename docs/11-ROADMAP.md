@@ -72,6 +72,31 @@ Open limitations in the 2.0 code (Milestone 3):
 
 Legacy defects D-01…D-10 are tracked in [01-DISCOVERY-REPORT §5](01-DISCOVERY-REPORT.md#5-weaknesses-defects-and-risks) and addressed by FR-CLN-02, FR-PIPE-05, FR-MATCH-05, FR-PIPE-03, FR-PIPE-06, FR-RUN-02, FR-SET-01, FR-RULE-01 and FR-CAT-03.
 
+### 2.5 Implementation status by requirement
+
+Only requirements with code and passing tests are listed. Everything not listed is designed but not yet implemented. Status as of Milestone 3 (CI run 38120836246).
+
+| Requirement | Status | Evidence / what is missing |
+|---|---|---|
+| FR-AUTH-01 | Implemented | Setup token in console and file, regenerated at every start, old tokens refused, refused once a user exists (`backend/tests/test_setup.py`, e2e) |
+| FR-AUTH-02 | Implemented | 12 h idle and 7 d absolute expiry, lockout with responses identical to a wrong password (`test_auth.py`) |
+| FR-AUTH-03 | Implemented for all existing endpoints | Permission matrix: every route × every role, plus anonymous, cross-checked against OpenAPI (`test_permissions.py`) |
+| FR-AUTH-04 | Implemented | Create, disable, reset password, change own password; disabling revokes sessions; last-admin guard (`test_users.py`, e2e) |
+| FR-AUD-01 | Partial | Append-only audit log with triggers (`test_database.py`); filter, search and export arrive in Milestone 4b/4c |
+| FR-OBS-01 | Partial | JSON logs with request IDs; health page covers database, schema and data folder; credential, store and S3 checks arrive in Milestone 4b |
+| FR-OPS-03 | Partial | `serve`, `create-admin`, `reset-password` (`test_cli.py`); other commands arrive with their milestones |
+| FR-UX-04 | Partial | Colour mode (pre-paint) and density saved per user (unit and e2e tests); notification settings arrive with notifications (Milestone 4c) |
+| NFR-SEC-01 | Implemented | `pip-audit` and `npm audit` gates in CI; 0 known vulnerabilities |
+| NFR-SEC-02 | Implemented | ruff (including bandit rules), oxlint (`react/no-danger`), gitleaks in CI |
+| NFR-SEC-03 | Partial | Log redaction filter (`test_units.py`); the canary-secret test arrives with secrets (Milestone 4b) |
+| NFR-SEC-04 | Partial | Host allow-list, CSRF, Origin, cookie attributes, CSP and headers tested (`test_http_security.py`, e2e); ASVS review in Milestone 6 |
+| NFR-A11Y-01 | Partial | axe on every existing screen and dialog in 3 browsers, zero serious or critical violations; WCAG contrast test on all tokens; keyboard skip-link test; manual NVDA pass in Milestone 6 |
+| NFR-MAINT-01 | Implemented | ruff, mypy `--strict`, import-linter, oxlint, Prettier, `tsc --strict` gates in CI |
+| NFR-MAINT-02 | Implemented (current code) | Backend 94.3% branch, front end 87.5% lines; the `core/` 90% gate applies once `core/` exists (Milestone 4a) |
+| NFR-PERF-02 | Partial | Initial JS 169 KB gzip, gated in CI; Lighthouse LCP measurement in Milestone 6 |
+| NFR-PORT-01 | Partial | CI on Ubuntu and Windows; macOS is not in CI |
+| NFR-REL-02 | Partial | WAL and `synchronous=FULL` configured and tested; transactions commit before responses (`test_transactions.py`); chaos tests in Milestone 4b |
+
 ## 3. Traceability matrix
 
 Verification abbreviations: **U** unit, **P** property, **I** integration, **E** end-to-end, **A** accessibility, **B** benchmark, **C** chaos, **S** security, **V** AI evaluation, **R** review/checklist, **D** drill (manual procedure).

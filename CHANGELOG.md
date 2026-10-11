@@ -17,7 +17,7 @@ All notable changes to this project are documented here. The format follows [Kee
   - Setup, sign-in, dashboard (health), account (password, appearance) and user-management screens.
   - Typed API client generated from OpenAPI.
 - **Tests and CI:**
-  - 89 backend tests (94% branch coverage), 97 front-end tests including 74 WCAG contrast checks, and 5 end-to-end tests with axe and CSP-violation detection.
+  - 91 backend tests (94% branch coverage), 97 front-end tests including 74 WCAG contrast checks, and 15 end-to-end test runs (5 scenarios in Chromium, Firefox and WebKit) with axe and CSP-violation detection.
   - GitHub Actions for docs, backend (Ubuntu and Windows), front end, end-to-end (Chromium, Firefox, WebKit) and gitleaks.
 - `THIRD-PARTY-NOTICES.md` and bundled licence texts for fonts and the password list.
 - ADR-0014 recording the implementation adjustments discovered while building Milestone 3, and ADR-0015 allowing inline style attributes in the CSP (WebKit).

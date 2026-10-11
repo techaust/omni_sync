@@ -4,6 +4,19 @@
 
 This document records the evidence that the documentation meets the [documentation standard](DOCUMENTATION-STANDARD.md). It is repeated at the end of every milestone and whenever a document's status changes.
 
+## 0. Audit of 2026-10-11 (end of Milestone 3)
+
+| Item | Result |
+|---|---|
+| Scope | 39 Markdown files (adds THIRD-PARTY-NOTICES, the backend and front-end READMEs, ADR-0014 and ADR-0015), about 41,100 words |
+| ``python scripts/check_docs.py`` | 0 errors, 0 warnings (39 files, 324 anchors, 110 legacy citations verified) |
+| markdownlint | 0 issues |
+| Docs CI job | Green on every push |
+| Docs-versus-code check | The documents were compared with the implementation, and drift was corrected. 05-API-SPEC was missing 4 error codes, the ``permissions`` field of ``/auth/me`` and the sign-in behaviour of ``POST /setup``; the CHANGELOG test count was outdated. Implementation-status sections were added to [05-API-SPEC](05-API-SPEC.md#implementation-status), [04-DATA-MODEL](04-DATA-MODEL.md#implementation-status) and [11-ROADMAP §2.5](11-ROADMAP.md#25-implementation-status-by-requirement), so built and designed-only behaviour are distinguishable. |
+| Decisions made during implementation | Recorded as ADRs: [ADR-0014](adr/0014-milestone-3-implementation-adjustments.md), [ADR-0015](adr/0015-csp-style-attributes.md) |
+
+The Milestone 2 audit below remains the record for the design documents.
+
 ## 1. Audit of 2026-10-11 (end of Milestone 2 drafting)
 
 ### 1.1 Scope

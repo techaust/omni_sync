@@ -4,6 +4,10 @@
 
 This document defines the local SQLite schema, the shared S3 documents, the file-system layout and the legacy import mapping. Column types are SQLite affinities as declared through SQLAlchemy. Every timestamp is a UTC ISO-8601 string (`TEXT`). Alembic migrations are the source of truth once implementation starts; this document must be updated in the same PR as any migration.
 
+## Implementation status
+
+Implemented in Milestone 3 by migration `0001` (`backend/src/omnisync/db/migrations/versions/0001_baseline.py`): `instance`, `users`, `sessions`, `settings` and `audit_log`, including the append-only triggers. `backend/tests/test_database.py` fails if the ORM models and the migrations drift apart. The data directory default, `instance.lock` and `setup-token.txt` (section 4) are also implemented. All other tables and the shared S3 documents are designed but not yet implemented.
+
 ## 1. Entity-relationship overview
 
 ```mermaid
